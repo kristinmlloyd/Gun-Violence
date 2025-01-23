@@ -1,0 +1,31 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{python}
+
+import pandas as pd
+
+# Load the merged data
+merged_data = pd.read_csv("../data/merged_data.csv")
+
+```
+
+```{python}
+
+# Display column names
+print(merged_data.columns)
+
+```
+
+```{python}
+
+top_10_firearm_mortality = merged_data[['State', 'firearm_mortality_by_state_2022']]\
+    .sort_values(by='firearm_mortality_by_state_2022', ascending=False)\
+    .head(10)
+
+# Display the result
+print(top_10_firearm_mortality)
+
+```

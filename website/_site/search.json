@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "data-cleaning/data-merging.html",
+    "href": "data-cleaning/data-merging.html",
+    "title": "Data Merging",
+    "section": "",
+    "text": "Code\nimport pandas as pd\n\n# Load the CSV files\nfactors = pd.read_csv(\"../data/factors.csv\")\npolicy = pd.read_csv(\"../data/policy.csv\")\nviolence = pd.read_csv(\"../data/violence.csv\")\n\n# Perform an outer merge on 'State'\nmerged_data = factors.merge(policy, on=\"State\", how=\"outer\").merge(violence, on=\"State\", how=\"outer\")\n\n# Save the merged file\nmerged_data.to_csv(\"../data/merged_data.csv\", index=False)\n\nprint(\"Data merged and saved successfully!\")\n\n\nData merged and saved successfully!"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "website",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  }
+]

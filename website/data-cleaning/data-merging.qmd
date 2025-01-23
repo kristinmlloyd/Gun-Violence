@@ -1,0 +1,26 @@
+---
+title: "Data Merging"
+author: “Kristin Lloyd”
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+---
+```{python}
+
+import pandas as pd
+
+# Load the CSV files
+factors = pd.read_csv("../data/factors.csv")
+policy = pd.read_csv("../data/policy.csv")
+violence = pd.read_csv("../data/violence.csv")
+
+# Perform an outer merge on 'State'
+merged_data = factors.merge(policy, on="State", how="outer").merge(violence, on="State", how="outer")
+
+# Save the merged file
+merged_data.to_csv("../data/merged_data.csv", index=False)
+
+print("Data merged and saved successfully!")
+
+```
