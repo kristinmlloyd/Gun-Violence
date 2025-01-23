@@ -43,3 +43,317 @@ merged_data['mortality_category'] = pd.cut(merged_data['firearm_mortality_by_sta
 print(merged_data['mortality_category'].value_counts())
 
 ```
+
+```{python}
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+merged_data = pd.read_csv("../data/merged_data.csv")
+
+# Define bins and labels for firearm mortality
+bins = [0, 10, 15, 20, 25, merged_data['firearm_mortality_by_state_2022'].max()]
+labels = ["Very Low", "Low", "Moderate", "High", "Very High"]
+
+# Categorize firearm mortality rates
+merged_data['mortality_category'] = pd.cut(
+    merged_data['firearm_mortality_by_state_2022'], bins=bins, labels=labels
+)
+
+# Define custom color palette
+palette = {
+    "Very Low": "#1c7416", 
+    "Low": "#68bb59", 
+    "Moderate": "#fab733", 
+    "High": "#ff0000", 
+    "Very High": "#c61a09"
+}
+
+# Create box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='drug_overdose_mortality_rate', 
+    palette=palette
+)
+
+# Format plot to match the reference image
+plt.title("Drug Overdose Mortality Rate by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Drug Overdose Mortality Rate (per 100,000)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+merged_data = pd.read_csv("../data/merged_data.csv")
+
+# Define bins and labels for firearm mortality
+bins = [0, 10, 15, 20, 25, merged_data['firearm_mortality_by_state_2022'].max()]
+labels = ["Very Low", "Low", "Moderate", "High", "Very High"]
+
+# Categorize firearm mortality rates
+merged_data['mortality_category'] = pd.cut(
+    merged_data['firearm_mortality_by_state_2022'], bins=bins, labels=labels
+)
+
+# Ensure correct order of categories
+merged_data['mortality_category'] = pd.Categorical(
+    merged_data['mortality_category'], categories=labels, ordered=True
+)
+
+# Define custom color palette
+palette = {
+    "Very Low": "#1c7416", 
+    "Low": "#68bb59", 
+    "Moderate": "#fab733", 
+    "High": "#ff0000", 
+    "Very High": "#c61a09"
+}
+
+# Create box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='access_to_mental_health_care_ranking', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Access to Mental Health Care Ranking by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Access to Mental Health Care Ranking (Lower is Better)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='state_ranking_in_mental_health_in_adults', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("State Ranking in Mental Health in Adults by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("State Ranking in Mental Health (Lower is Better)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='domestic_violence_shelters', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Number of Domestic Violence Shelters by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Number of Domestic Violence Shelters", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='unemployment_rate', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Unemployment Rate by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Unemployment Rate (%)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='labor_participation_women_percentage', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Labor Participation of Women by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Labor Participation of Women (%)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='missing_person_by_state', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Number of Missing Persons by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Number of Missing Persons", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='gun_ownership_rates_per_state', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Gun Ownership Rates by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Gun Ownership Rate (%)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='suicide_by_firearms', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Suicides by Firearms by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Number of Suicides by Firearms", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='firearm_mortality_rate_children_one_to_nine_years_old', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Firearm Mortality Rate (Ages 1-9) by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Firearm Mortality Rate (Ages 1-9) per 100,000", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+
+
+```
+
+```{python}
+
+
+
+```
+
+```{python}
+
+
+
+```
