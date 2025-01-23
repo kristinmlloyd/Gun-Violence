@@ -1,0 +1,149 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{r, warning = FALSE, message = FALSE}
+
+library(tidyverse)
+library(readr)
+library(ggplot2)
+library(usmap)
+library(sf)
+
+gun_deaths <- read.csv("website/data/merged_data.csv")
+
+```
+
+```{r}
+
+gun_deaths <- read.csv("data/merged_data.csv")
+head(gun_deaths)
+
+```
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+
+# Load data
+gun_deaths <- read.csv("data/merged_data.csv")
+
+# Create bins for firearm mortality
+gun_death_distribution <- gun_deaths %>%
+  mutate(mortality_bin = cut(
+    firearm_mortality_by_state_2022, 
+    breaks = c(0, 10, 15, 20, 25, Inf), 
+    labels = c("0-10", "10-15", "15-20", "20-25", "25+"),
+    right = FALSE
+  )) %>%
+  group_by(mortality_bin) %>%
+  summarise(State_Count = n(), .groups = "drop")
+
+# Plot firearm mortality distribution (Horizontal Bar Chart)
+ggplot(gun_death_distribution, aes(x = mortality_bin, y = State_Count, fill = mortality_bin)) +
+    geom_bar(stat = "identity", color = "black", width = 0.7) +
+    geom_text(aes(label = State_Count), hjust = 1.1, size = 6, color = "black") +  # Adjust label position
+    scale_fill_manual(
+        values = c(
+            "0-10" = "#68bb59",
+            "10-15" = "#acdf87",
+            "15-20" = "#fab733",
+            "20-25" = "#ff6242",
+            "25+" = "#c61a09"
+        )
+    ) +
+    labs(
+        title = "Firearm Mortality by State (2022)",
+        subtitle = "Number of states in each mortality range",
+        x = NULL,  # Remove x-axis label
+        y = NULL,  # Remove y-axis label
+        fill = "Mortality Rate Bin"
+    ) +
+    theme_minimal() +
+    theme(
+        plot.title = element_text(size = 14, hjust = 0.5),
+        plot.subtitle = element_text(size = 12, hjust = 0.5),
+        axis.text.y = element_text(size = 12),
+        axis.text.x = element_blank(),  # Hide x-axis values
+        axis.ticks.x = element_blank(),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 10),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()
+    ) +
+    coord_flip()  # Flip the bar chart horizontally
+
+```
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(maps)
+
+# Load dataset
+gun_deaths <- read.csv("data/merged_data.csv")
+
+# Ensure state names are lowercase for merging
+gun_deaths <- gun_deaths %>%
+    mutate(State = tolower(State))
+
+# Define mortality bins
+mortality_bins <- c(0, 10, 15, 20, 25, Inf)
+mortality_labels <- c("0-10", "10-15", "15-20", "20-25", "25+")
+
+# Assign states into mortality categories
+gun_deaths <- gun_deaths %>%
+    mutate(mortality_score = cut(
+        firearm_mortality_by_state_2022, 
+        breaks = mortality_bins, 
+        labels = 1:length(mortality_labels),
+        right = FALSE
+    )) %>%
+    mutate(mortality_score = as.numeric(as.character(mortality_score)))
+
+# Load U.S. state map data
+states_map <- map_data("state")
+
+# Merge state map with gun deaths data
+map_data <- states_map %>%
+    left_join(gun_deaths, by = c("region" = "State"))
+
+# Plot Gun Deaths by State
+ggplot(map_data, aes(long, lat, group = group, fill = mortality_score)) +
+    geom_polygon(color = "black", linewidth = 0.3) +
+    coord_fixed(1.3) +
+    theme_minimal() +
+    scale_fill_gradientn(
+        colors = c("#68bb59", "#acdf87", "#fab733", "#ff6242", "#c61a09"),
+        breaks = c(1, 3, 5),
+        labels = c("Lowest", "Medium", "Highest"),
+        na.value = "gray80",
+        guide = guide_colorbar(
+            barwidth = 15,
+            barheight = 1,
+            title.position = "top",
+            title.hjust = 0.5
+        )
+    ) +
+    labs(
+        title = "Firearm Mortality by State (2022)",
+        subtitle = "Gun deaths categorized into five levels",
+        fill = "Mortality Rate"
+    ) +
+    theme(
+        plot.title = element_text(size = 14, hjust = 0.5),
+        plot.subtitle = element_text(size = 12, hjust = 0.5),
+        legend.title = element_text(size = 12, hjust = 0.5),
+        legend.text = element_text(size = 10, angle = 45, vjust = 1, hjust = 1),
+        legend.position = "bottom",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank()
+    )
+
+```
+
