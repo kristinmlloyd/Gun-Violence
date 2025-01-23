@@ -1,0 +1,30 @@
+---
+title: "Data Merging"
+author: “Kristin Lloyd”
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+---
+```{python}
+
+# import pandas as pd
+
+# economic_data = pd.read_excel("../data/raw_data/EconomicData.xlsx", keep_default_na=False, na_values=[])
+# health_data = pd.read_excel("../data/raw_data/HealthData.xlsx", keep_default_na=False, na_values=[])
+# policy_data = pd.read_excel("../data/raw_data/PolicyData.xlsx", keep_default_na=False, na_values=[])
+# education_data = pd.read_excel("../data/raw_data/EducationData.xlsx", keep_default_na=False, na_values=[])
+# fostercare_data = pd.read_csv("../data/raw_data/FosterCareData.csv", keep_default_na=False, na_values=[])
+
+# merged_data = economic_data.merge(health_data, on="State", how="outer")\
+#                            .merge(policy_data, on="State", how="outer")
+
+```
+
+```{python}
+
+# merged_data.to_csv("../data/clean_data/merged_data.csv", index=False)
+
+# print("Data merged and saved successfully!")
+
+```
