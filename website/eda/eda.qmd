@@ -33,7 +33,7 @@ print(top_10_firearm_mortality)
 ```{python}
 
 # Define bins and labels
-bins = [0, 10, 15, 20, 25, merged_data['firearm_mortality_by_state_2022'].max()]
+bins = [0, 10, 15, 20, 25, float('inf')]
 labels = ["Very Low", "Low", "Moderate", "High", "Very High"]
 
 # Assign categories based on firearm mortality rate

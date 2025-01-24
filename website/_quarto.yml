@@ -5,7 +5,7 @@ website:
   title: "website"
   navbar:
     left:
-      - href: index.qmd
+      - href: index1.qmd
         text: Home
       - about.qmd
 
