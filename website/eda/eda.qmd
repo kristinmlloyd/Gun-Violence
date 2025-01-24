@@ -342,15 +342,53 @@ plt.show()
 
 ```{python}
 
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='dv_people_to_shelter', 
+    palette=palette,
+    width=0.6
+)
 
+# Format plot
+plt.title("Domestic Violence Survivors per Shelter by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("DV Survivors per Shelter", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
 
 ```
 
 ```{python}
 
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='dv_spending_per_person', 
+    palette=palette,
+    width=0.6
+)
 
+# Format plot
+plt.title("Domestic Violence Spending per Person by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("DV Spending per Person (USD)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
 
 ```
+
+### Binary Vals
 
 ```{python}
 
