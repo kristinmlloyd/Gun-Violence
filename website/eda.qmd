@@ -1,0 +1,1140 @@
+---
+title: ""
+author: “Kristin Lloyd”
+format: 
+  html:
+    css: styles.css
+    embed-resources: true
+    code-fold: true
+---
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+merged_data = pd.read_csv("data/merged_data.csv")
+
+# Define bins and labels for firearm mortality
+bins = [0, 10, 15, 20, 25, merged_data['firearm_mortality_by_state_2022'].max()]
+labels = ["Very Low", "Low", "Moderate", "High", "Very High"]
+
+# Categorize firearm mortality rates
+merged_data['mortality_category'] = pd.cut(
+    merged_data['firearm_mortality_by_state_2022'], bins=bins, labels=labels
+)
+
+# Define custom color palette
+palette = {
+    "Very Low": "#1c7416", 
+    "Low": "#68bb59", 
+    "Moderate": "#fab733", 
+    "High": "#ff0000", 
+    "Very High": "#c61a09"
+}
+
+# Create box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='drug_overdose_mortality_rate', 
+    palette=palette
+)
+
+# Format plot to match the reference image
+plt.title("Drug Overdose Mortality Rate by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Drug Overdose Mortality Rate (per 100,000)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='state_ranking_in_mental_health_in_adults', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("State Ranking in Mental Health in Adults by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("State Ranking in Mental Health (Lower is Better)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+#| fig-width: 6
+#| fig-height: 4
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='domestic_violence_shelters', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Number of Domestic Violence Shelters by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Number of Domestic Violence Shelters", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+#| fig-width: 6
+#| fig-height: 4
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='unemployment_rate', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Unemployment Rate by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Unemployment Rate (%)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='labor_participation_women_percentage', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Labor Participation of Women by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Labor Participation of Women (%)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='missing_person_by_state', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Number of Missing Persons by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Number of Missing Persons", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='gun_ownership_rates_per_state', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Gun Ownership Rates by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Gun Ownership Rate (%)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='suicide_by_firearms', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Suicides by Firearms by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Number of Suicides by Firearms", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='firearm_mortality_rate_children_one_to_nine_years_old', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Firearm Mortality Rate (Ages 1-9) by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Firearm Mortality Rate (Ages 1-9) per 100,000", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='dv_people_to_shelter', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Domestic Violence Survivors per Shelter by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("DV Survivors per Shelter", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='dv_spending_per_person', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Domestic Violence Spending per Person by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("DV Spending per Person (USD)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+### Binary Vals
+
+```{python}
+
+print(merged_data.columns)
+
+```
+
+```{python}
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+palette = {
+    "Very Low": "#1c7416", 
+    "Low": "#68bb59", 
+    "Moderate": "#fab733", 
+    "High": "#ff0000", 
+    "Very High": "#c61a09"
+}
+
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="prohibition_for_stalkers", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Prohibition for Stalkers Policy", fontsize=14)
+plt.xlabel("Prohibition for Stalkers Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "abusers_turn_in_gun_after_conviction"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="abusers_turn_in_gun_after_conviction", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Gun Surrender Requirement for Abusers", fontsize=14)
+plt.xlabel("Gun Surrender Policy for Convicted Abusers", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "prohibition_for_domestic_abusers"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="prohibition_for_domestic_abusers", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Prohibition for Domestic Abusers", fontsize=14)
+plt.xlabel("Prohibition for Domestic Abusers Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+# Create the stacked bar plot for "prohibition_for_convicted_domestic_abusers"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="prohibition_for_convicted_domestic_abusers", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Prohibition for Convicted Domestic Abusers", fontsize=14)
+plt.xlabel("Prohibition for Convicted Domestic Abusers Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "waiting_period"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="waiting_period", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Waiting Period Policy", fontsize=14)
+plt.xlabel("Waiting Period Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+# Create the stacked bar plot for "mental_health_in_background_check"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="mental_health_in_background_check", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Mental Health in Background Check Policy", fontsize=14)
+plt.xlabel("Mental Health in Background Check Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "funding_for_violence_intervention"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="funding_for_violence_intervention", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Funding for Violence Intervention", fontsize=14)
+plt.xlabel("Funding for Violence Intervention Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "no_purchase_after_violent_offense"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="no_purchase_after_violent_offense", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by No Purchase After Violent Offense Policy", fontsize=14)
+plt.xlabel("No Purchase After Violent Offense Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "age_requirement"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="age_requirement", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Age Requirement Policy", fontsize=14)
+plt.xlabel("Age Requirement Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "mental_illness_prohibitor"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="mentaI_illness_prohibitor", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Mental Illness Prohibitor Policy", fontsize=14)
+plt.xlabel("Mental Illness Prohibitor Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "hate_crime_prohibitor"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="hate_crime_prohibitor", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Hate Crime Prohibitor Policy", fontsize=14)
+plt.xlabel("Hate Crime Prohibitor Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "gun_removal_program"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="gun_removal_program", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Gun Removal Program Policy", fontsize=14)
+plt.xlabel("Gun Removal Program Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+# Create the stacked bar plot for "fugitive_from_justice_prohibitor"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="fugitive_from_justice_prohibitor", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Fugitive from Justice Prohibitor Policy", fontsize=14)
+plt.xlabel("Fugitive from Justice Prohibitor Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "felony_prohibitor"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="felony prohibitor", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Felony Prohibitor Policy", fontsize=14)
+plt.xlabel("Felony Prohibitor Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "restraining_order_prohibitor"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="restraining_order_prohibitor", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Restraining Order Prohibitor Policy", fontsize=14)
+plt.xlabel("Restraining Order Prohibitor Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "no_open_carry"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="no_open_carry", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by No Open Carry Policy", fontsize=14)
+plt.xlabel("No Open Carry Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "no_guns_in_k_through_twelve_schools"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="no_guns_in_k_through_twelve_schools", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by No Guns in K-12 Schools Policy", fontsize=14)
+plt.xlabel("No Guns in K-12 Schools Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "no_guns_at_demonstrations"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="no_guns_at_demonstrations", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by No Guns at Demonstrations Policy", fontsize=14)
+plt.xlabel("No Guns at Demonstrations Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "no_guns_on_college_campuses"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="no_guns_on_college_campuses", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by No Guns on College Campuses Policy", fontsize=14)
+plt.xlabel("No Guns on College Campuses Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "bar_concealed_carry_by_people_with_violent_misdemeanors"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="bar_concealed_carry_by_people_with_violent_misdemeanors", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Concealed Carry Ban for People with Violent Misdemeanors", fontsize=14)
+plt.xlabel("Ban on Concealed Carry for People with Violent Misdemeanors", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "high_capacity_magazines_prohibited"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="high_capacity_magazines_prohibited", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by High-Capacity Magazine Prohibition Policy", fontsize=14)
+plt.xlabel("High-Capacity Magazines Prohibited Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+# Create the stacked bar plot for "dealer_license_required"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="dealer_lisence_required", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Dealer License Requirement Policy", fontsize=14)
+plt.xlabel("Dealer License Required Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "assault_weapons_prohibited"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="asault_weapons_prohibited", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Assault Weapons Prohibition Policy", fontsize=14)
+plt.xlabel("Assault Weapons Prohibited Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "secure_storage_child_access_laws"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="secure_storage_child_access_laws", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Secure Storage & Child Access Laws", fontsize=14)
+plt.xlabel("Secure Storage & Child Access Laws", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "rejected_shoot_first_laws"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="rejected_shoot_first_laws", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Rejected Shoot First Laws", fontsize=14)
+plt.xlabel("Rejected Shoot First Laws Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "red_flag_laws"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="red_flag_laws", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Red Flag Laws", fontsize=14)
+plt.xlabel("Red Flag Laws Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+
+# Create the stacked bar plot for "background_check_or_purchase_permit"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="background_check_or_purchase_permit", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Background Check or Purchase Permit Policy", fontsize=14)
+plt.xlabel("Background Check or Purchase Permit Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "concealed_carry_permit_required"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="concealed_carry_permit_required", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Concealed Carry Permit Requirement Policy", fontsize=14)
+plt.xlabel("Concealed Carry Permit Required Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "extreme_risk_law"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="extreme_risk_law", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Extreme Risk Law Policy", fontsize=14)
+plt.xlabel("Extreme Risk Law Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+
+```
+
+```{python}
+# Create the stacked bar plot for "total_abortion_ban"
+plt.figure(figsize=(10, 6))
+sns.histplot(
+    data=merged_data, 
+    x="total_abortion_ban", 
+    hue="mortality_category", 
+    multiple="fill", 
+    shrink=0.8, 
+    palette=palette
+)
+
+# Format plot
+plt.title("Firearm Mortality Rates by Total Abortion Ban Policy", fontsize=14)
+plt.xlabel("Total Abortion Ban Policy", fontsize=12)
+plt.ylabel("Proportion", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(title="Firearm Mortality Level", fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```

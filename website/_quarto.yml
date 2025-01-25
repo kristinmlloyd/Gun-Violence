@@ -7,7 +7,7 @@ website:
     left:
       - href: index1.qmd
         text: Home
-      - about.qmd
+      - eda.qmd
 
 format:
   html:
