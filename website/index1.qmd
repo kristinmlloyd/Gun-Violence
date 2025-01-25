@@ -13,12 +13,6 @@ The bar char and map below visualize the distribution of the firearm morality ra
 
 ```{python}
 
-
-
-```
-
-```{python}
-
 #| error: false
 #| warning: false
 #| message: false
@@ -58,7 +52,7 @@ subtitle = "Number of states in each mortality range"
 plt.figure(figsize=(7, 4))  # Slightly increased width for better spacing
 ax = sns.barplot(
     y='mortality_bin', x='State_Count', data=gun_death_distribution,
-    order=labels, palette=colors, edgecolor='black', linewidth=1.5  # Increased border width
+    order=labels, palette=colors, edgecolor='black', linewidth=.8  # Increased border width
 )
 
 # Add labels right outside the bars with better spacing
@@ -69,7 +63,7 @@ plt.title(f"{title}\n{subtitle}", fontsize=12, weight='normal')  # Unbolded titl
 plt.xlabel("")
 plt.ylabel("")
 plt.xticks([])
-plt.grid(axis='x', linestyle="--", alpha=0.5)
+plt.grid(axis='x', linestyle="--", alpha=0.7)
 plt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis
 plt.show()
 
@@ -133,6 +127,5 @@ ax.set_yticks([])
 ax.set_frame_on(False)
 
 plt.show()
-
 
 ```
