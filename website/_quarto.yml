@@ -1,19 +1,41 @@
 project:
   type: website
+  resources:
+    - images/
 
 website:
-  title: "website"
+  title: "DSAN 5100"
+  favicon: "images/gu.png"
   navbar:
+    search: true
     left:
-      - href: index1.qmd
-        text: Home
-      - eda.qmd
+      - href: index.qmd
+        text: Introduction
+      - href: eda.qmd
+        text: Statistical Methods
+      - text: Results
+        menu: 
+          - href: eda.qmd
+            text: Overall Health
+          - href: eda.qmd
+            text: Maternal Health
+      - href: eda.qmd
+        text: Conclusion
+      - href: eda.qmd
+        text: Bibliography
+      - href: eda.qmd
+        text: Appendix
+
+    right:
+      - icon: github
+        href: "https://github.com/EB-Sam/5100_project.git"
 
 format:
   html:
-    theme: cosmo
+    theme: lumen
     css: styles.css
+    page-layout: full
     toc: true
-
-
+    toc-location: left
+    toc-depth: 4
 

@@ -3,3 +3,41 @@ img {
     max-width: 80%; /* Adjust percentage to control plot size */
     height: auto;
 }
+
+body {
+    zoom: 0.9; /* Adjust zoom level (e.g., 1.2 = 120%, 0.8 = 80%) */
+  }
+
+  h4 {
+    font-weight: bold; /* Makes Header 4 thicker/bolder */
+}
+
+  .navbar {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9rem; 
+    background-color: #0E1D42 !important;
+    color: #fdfefe !important; 
+    border-bottom: none; 
+  } 
+
+  .navbar .dropdown-menu a {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #767676; 
+    background-color: #f8f9fa; 
+}
+
+
+  .navbar .dropdown-menu a:hover {
+    color: #767676; 
+    background-color: #e3e6e9; 
+  }
+
+  .scrollable-output {
+    max-height: 300px; /* Adjust the height as needed */
+    overflow-y: auto;  /* Enables vertical scrolling */
+    overflow-x: auto;  /* Enables horizontal scrolling for wide tables */
+    border: 1px solid #ccc; /* Optional: Add a border for clarity */
+    padding: 10px; /* Optional: Add some padding for readability */
+    background-color: #f9f9f9; /* Optional: Light background for contrast */
+  }
+

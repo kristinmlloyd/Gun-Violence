@@ -1,0 +1,131 @@
+---
+title: "Gun Violence"
+author: Kristin Lloyd
+format:
+  html:
+    embed-resources: true
+    code-fold: true
+---
+
+## Problem Objectives
+
+The bar char and map below visualize the distribution of the firearm morality rate across the country.
+
+```{python}
+
+#| error: false
+#| warning: false
+#| message: false
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+gun_deaths = pd.read_csv("data/merged_data.csv")
+
+# Define bins and labels
+bins = [0, 10, 15, 20, 25, float('inf')]
+labels = ["Very Low", "Low", "Moderate", "High", "Very High"]  # Fixed the syntax error
+
+# Assign bins, ensuring no overlap (excluding the right endpoint)
+gun_deaths['mortality_bin'] = pd.cut(
+    gun_deaths['firearm_mortality_by_state_2022'], bins=bins, labels=labels, right=False
+)
+
+# Count states in each bin
+gun_death_distribution = gun_deaths['mortality_bin'].value_counts().sort_index().reset_index()
+gun_death_distribution.columns = ['mortality_bin', 'State_Count']
+
+# Define colors
+colors = {
+    "Very Low": "#68bb59",
+    "Low": "#acdf87",
+    "Moderate": "#fab733",
+    "High": "#ff6242",
+    "Very High": "#c61a09"
+}
+
+# Plot
+title = "Firearm Mortality by State (2022)"
+subtitle = "Number of states in each mortality range"
+plt.figure(figsize=(7, 4))  # Slightly increased width for better spacing
+ax = sns.barplot(
+    y='mortality_bin', x='State_Count', data=gun_death_distribution,
+    order=labels, palette=colors, edgecolor='black', linewidth=.8  # Increased border width
+)
+
+# Add labels right outside the bars with better spacing
+for index, value in enumerate(gun_death_distribution['State_Count']):
+    ax.text(value + 0.8, index, str(value), va='center', ha='left', fontsize=12, color='black')
+
+plt.title(f"{title}\n{subtitle}", fontsize=12, weight='normal')  # Unbolded title, smaller font
+plt.xlabel("")
+plt.ylabel("")
+plt.xticks([])
+plt.grid(axis='x', linestyle="--", alpha=0.7)
+plt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis
+plt.show()
+
+```
+
+This plot indicates that there are many more restrictive states than protective states, with a total of 27 states having restrictive policies compared to 18 states with protective policies. This imbalance is particularly evident in the 'most restrictive' category, which alone accounts for 16 states.
+
+```{python}
+
+import pandas as pd
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import LinearSegmentedColormap
+
+# Load dataset
+gun_deaths = pd.read_csv("data/merged_data.csv")
+
+# Ensure state names are lowercase for merging
+gun_deaths["State"] = gun_deaths["State"].str.lower()
+
+# Define mortality bins and labels
+mortality_bins = [0, 10, 15, 20, 25, float("inf")]
+mortality_labels = [1, 2, 3, 4, 5]
+
+# Assign states into mortality categories
+gun_deaths["mortality_score"] = pd.cut(
+    gun_deaths["firearm_mortality_by_state_2022"], 
+    bins=mortality_bins, 
+    labels=mortality_labels,
+    right=False
+).astype(float)
+
+# Load U.S. state shapefile from Census Bureau
+states_url = "https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip"
+states_map = gpd.read_file(states_url)
+
+# Ensure lowercase for merging
+states_map["region"] = states_map["NAME"].str.lower()
+
+# Merge state map with gun deaths data
+map_data = states_map.merge(gun_deaths, left_on="region", right_on="State", how="left")
+
+# Define color map
+colors = ["#68bb59", "#acdf87", "#fab733", "#ff6242", "#c61a09"]
+cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
+
+# Plot Gun Deaths by State
+fig, ax = plt.subplots(figsize=(16, 10))
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="3%", pad=0.2)
+
+# Plot states
+map_data.plot(column="mortality_score", cmap=cmap, linewidth=0.3, edgecolor="black", ax=ax, legend=True, cax=cax)
+
+# Customize plot
+ax.set_title("Firearm Mortality by State (2022)", fontsize=18)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.set_frame_on(False)
+
+plt.show()
+
+```
