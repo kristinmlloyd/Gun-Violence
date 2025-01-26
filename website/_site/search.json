@@ -18,7 +18,7 @@
     "href": "index.html",
     "title": "Gun Violence",
     "section": "",
-    "text": "The bar char and map below visualize the distribution of the firearm morality rate across the country.\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Load data\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Define bins and labels\nbins = [0, 10, 15, 20, 25, float('inf')]\nlabels = [\"Very Low\", \"Low\", \"Moderate\", \"High\", \"Very High\"]  # Fixed the syntax error\n\n# Assign bins, ensuring no overlap (excluding the right endpoint)\ngun_deaths['mortality_bin'] = pd.cut(\n    gun_deaths['firearm_mortality_by_state_2022'], bins=bins, labels=labels, right=False\n)\n\n# Count states in each bin\ngun_death_distribution = gun_deaths['mortality_bin'].value_counts().sort_index().reset_index()\ngun_death_distribution.columns = ['mortality_bin', 'State_Count']\n\n# Define colors\ncolors = {\n    \"Very Low\": \"#68bb59\",\n    \"Low\": \"#acdf87\",\n    \"Moderate\": \"#fab733\",\n    \"High\": \"#ff6242\",\n    \"Very High\": \"#c61a09\"\n}\n\n# Plot\ntitle = \"Firearm Mortality by State (2022)\"\nsubtitle = \"Number of states in each mortality range\"\nplt.figure(figsize=(7, 4))  # Slightly increased width for better spacing\nax = sns.barplot(\n    y='mortality_bin', x='State_Count', data=gun_death_distribution,\n    order=labels, palette=colors, edgecolor='black', linewidth=.8  # Increased border width\n)\n\n# Add labels right outside the bars with better spacing\nfor index, value in enumerate(gun_death_distribution['State_Count']):\n    ax.text(value + 0.8, index, str(value), va='center', ha='left', fontsize=12, color='black')\n\nplt.title(f\"{title}\\n{subtitle}\", fontsize=12, weight='normal')  # Unbolded title, smaller font\nplt.xlabel(\"\")\nplt.ylabel(\"\")\nplt.xticks([])\nplt.grid(axis='x', linestyle=\"--\", alpha=0.7)\nplt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis\nplt.show()\n\n\n\n\n\n\n\n\n\nThis plot indicates that there are many more restrictive states than protective states, with a total of 27 states having restrictive policies compared to 18 states with protective policies. This imbalance is particularly evident in the ‘most restrictive’ category, which alone accounts for 16 states.\n\n\nCode\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom mpl_toolkits.axes_grid1 import make_axes_locatable\nfrom matplotlib.colors import LinearSegmentedColormap\n\n# Load dataset\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Ensure state names are lowercase for merging\ngun_deaths[\"State\"] = gun_deaths[\"State\"].str.lower()\n\n# Define mortality bins and labels\nmortality_bins = [0, 10, 15, 20, 25, float(\"inf\")]\nmortality_labels = [1, 2, 3, 4, 5]\n\n# Assign states into mortality categories\ngun_deaths[\"mortality_score\"] = pd.cut(\n    gun_deaths[\"firearm_mortality_by_state_2022\"], \n    bins=mortality_bins, \n    labels=mortality_labels,\n    right=False\n).astype(float)\n\n# Load U.S. state shapefile from Census Bureau\nstates_url = \"https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip\"\nstates_map = gpd.read_file(states_url)\n\n# Ensure lowercase for merging\nstates_map[\"region\"] = states_map[\"NAME\"].str.lower()\n\n# Merge state map with gun deaths data\nmap_data = states_map.merge(gun_deaths, left_on=\"region\", right_on=\"State\", how=\"left\")\n\n# Define color map\ncolors = [\"#68bb59\", \"#acdf87\", \"#fab733\", \"#ff6242\", \"#c61a09\"]\ncmap = LinearSegmentedColormap.from_list(\"custom_cmap\", colors)\n\n# Plot Gun Deaths by State\nfig, ax = plt.subplots(figsize=(16, 10))\ndivider = make_axes_locatable(ax)\ncax = divider.append_axes(\"right\", size=\"3%\", pad=0.2)\n\n# Plot states\nmap_data.plot(column=\"mortality_score\", cmap=cmap, linewidth=0.3, edgecolor=\"black\", ax=ax, legend=True, cax=cax)\n\n# Customize plot\nax.set_title(\"Firearm Mortality by State (2022)\", fontsize=18)\nax.set_xticks([])\nax.set_yticks([])\nax.set_frame_on(False)\n\nplt.show()"
+    "text": "The bar char and map below visualize the distribution of the firearm morality rate across the country.\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Load data\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Define bins and labels\nbins = [0, 10, 15, 20, 25, float('inf')]\nlabels = [\"Very Low\", \"Low\", \"Moderate\", \"High\", \"Very High\"]  # Fixed the syntax error\n\n# Assign bins, ensuring no overlap (excluding the right endpoint)\ngun_deaths['mortality_bin'] = pd.cut(\n    gun_deaths['firearm_mortality_by_state_2022'], bins=bins, labels=labels, right=False\n)\n\n# Count states in each bin\ngun_death_distribution = gun_deaths['mortality_bin'].value_counts().sort_index().reset_index()\ngun_death_distribution.columns = ['mortality_bin', 'State_Count']\n\n# Define colors\ncolors = {\n    \"Very Low\": \"#68bb59\",\n    \"Low\": \"#acdf87\",\n    \"Moderate\": \"#fab733\",\n    \"High\": \"#ff6242\",\n    \"Very High\": \"#c61a09\"\n}\n\n# Plot\ntitle = \"Firearm Mortality by State (2022)\"\nsubtitle = \"Number of States in Each Mortality Range\"\nplt.figure(figsize=(7, 4))  # Slightly increased width for better spacing\nax = sns.barplot(\n    y='mortality_bin', x='State_Count', data=gun_death_distribution,\n    order=labels, palette=colors, edgecolor='black', linewidth=.8  # Increased border width\n)\n\n# Add labels right outside the bars with better spacing\nfor index, value in enumerate(gun_death_distribution['State_Count']):\n    ax.text(value + 0.8, index, str(value), va='center', ha='left', fontsize=12, color='black')\n\nplt.title(f\"{title}\\n{subtitle}\", fontsize=12, weight='normal')  # Unbolded title, smaller font\nplt.xlabel(\"\")\nplt.ylabel(\"\")\nplt.xticks([])\nplt.grid(axis='x', linestyle=\"--\", alpha=0.7)\nplt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis\nplt.show()\n\n\n\n\n\n\n\n\n\nThis plot indicates that there are many more restrictive states than protective states, with a total of 27 states having restrictive policies compared to 18 states with protective policies. This imbalance is particularly evident in the ‘most restrictive’ category, which alone accounts for 16 states.\n\n\nCode\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom mpl_toolkits.axes_grid1 import make_axes_locatable\nfrom matplotlib.colors import LinearSegmentedColormap\n\n# Load dataset\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Ensure state names are lowercase for merging\ngun_deaths[\"State\"] = gun_deaths[\"State\"].str.lower()\n\n# Define mortality bins and labels\nmortality_bins = [0, 10, 15, 20, 25, float(\"inf\")]\nmortality_labels = [1, 2, 3, 4, 5]\n\n# Assign states into mortality categories\ngun_deaths[\"mortality_score\"] = pd.cut(\n    gun_deaths[\"firearm_mortality_by_state_2022\"], \n    bins=mortality_bins, \n    labels=mortality_labels,\n    right=False\n).astype(float)\n\n# Load U.S. state shapefile from Census Bureau\nstates_url = \"https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip\"\nstates_map = gpd.read_file(states_url)\n\n# Ensure lowercase for merging\nstates_map[\"region\"] = states_map[\"NAME\"].str.lower()\n\n# Merge state map with gun deaths data\nmap_data = states_map.merge(gun_deaths, left_on=\"region\", right_on=\"State\", how=\"left\")\n\n# Define color map\ncolors = [\"#68bb59\", \"#acdf87\", \"#fab733\", \"#ff6242\", \"#c61a09\"]\ncmap = LinearSegmentedColormap.from_list(\"custom_cmap\", colors)\n\n# Plot Gun Deaths by State\nfig, ax = plt.subplots(figsize=(16, 10))\ndivider = make_axes_locatable(ax)\ncax = divider.append_axes(\"right\", size=\"3%\", pad=0.2)\n\n# Plot states\nmap_data.plot(column=\"mortality_score\", cmap=cmap, linewidth=0.3, edgecolor=\"black\", ax=ax, legend=True, cax=cax)\n\n# Customize plot\nax.set_title(\"Firearm Mortality by State (2022)\", fontsize=18)\nax.set_xticks([])\nax.set_yticks([])\nax.set_frame_on(False)\n\nplt.show()"
   },
   {
     "objectID": "index1.html",
@@ -53,6 +53,90 @@
     "href": "index.html#problem-objectives",
     "title": "Gun Violence",
     "section": "",
-    "text": "The bar char and map below visualize the distribution of the firearm morality rate across the country.\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Load data\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Define bins and labels\nbins = [0, 10, 15, 20, 25, float('inf')]\nlabels = [\"Very Low\", \"Low\", \"Moderate\", \"High\", \"Very High\"]  # Fixed the syntax error\n\n# Assign bins, ensuring no overlap (excluding the right endpoint)\ngun_deaths['mortality_bin'] = pd.cut(\n    gun_deaths['firearm_mortality_by_state_2022'], bins=bins, labels=labels, right=False\n)\n\n# Count states in each bin\ngun_death_distribution = gun_deaths['mortality_bin'].value_counts().sort_index().reset_index()\ngun_death_distribution.columns = ['mortality_bin', 'State_Count']\n\n# Define colors\ncolors = {\n    \"Very Low\": \"#68bb59\",\n    \"Low\": \"#acdf87\",\n    \"Moderate\": \"#fab733\",\n    \"High\": \"#ff6242\",\n    \"Very High\": \"#c61a09\"\n}\n\n# Plot\ntitle = \"Firearm Mortality by State (2022)\"\nsubtitle = \"Number of states in each mortality range\"\nplt.figure(figsize=(7, 4))  # Slightly increased width for better spacing\nax = sns.barplot(\n    y='mortality_bin', x='State_Count', data=gun_death_distribution,\n    order=labels, palette=colors, edgecolor='black', linewidth=.8  # Increased border width\n)\n\n# Add labels right outside the bars with better spacing\nfor index, value in enumerate(gun_death_distribution['State_Count']):\n    ax.text(value + 0.8, index, str(value), va='center', ha='left', fontsize=12, color='black')\n\nplt.title(f\"{title}\\n{subtitle}\", fontsize=12, weight='normal')  # Unbolded title, smaller font\nplt.xlabel(\"\")\nplt.ylabel(\"\")\nplt.xticks([])\nplt.grid(axis='x', linestyle=\"--\", alpha=0.7)\nplt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis\nplt.show()\n\n\n\n\n\n\n\n\n\nThis plot indicates that there are many more restrictive states than protective states, with a total of 27 states having restrictive policies compared to 18 states with protective policies. This imbalance is particularly evident in the ‘most restrictive’ category, which alone accounts for 16 states.\n\n\nCode\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom mpl_toolkits.axes_grid1 import make_axes_locatable\nfrom matplotlib.colors import LinearSegmentedColormap\n\n# Load dataset\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Ensure state names are lowercase for merging\ngun_deaths[\"State\"] = gun_deaths[\"State\"].str.lower()\n\n# Define mortality bins and labels\nmortality_bins = [0, 10, 15, 20, 25, float(\"inf\")]\nmortality_labels = [1, 2, 3, 4, 5]\n\n# Assign states into mortality categories\ngun_deaths[\"mortality_score\"] = pd.cut(\n    gun_deaths[\"firearm_mortality_by_state_2022\"], \n    bins=mortality_bins, \n    labels=mortality_labels,\n    right=False\n).astype(float)\n\n# Load U.S. state shapefile from Census Bureau\nstates_url = \"https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip\"\nstates_map = gpd.read_file(states_url)\n\n# Ensure lowercase for merging\nstates_map[\"region\"] = states_map[\"NAME\"].str.lower()\n\n# Merge state map with gun deaths data\nmap_data = states_map.merge(gun_deaths, left_on=\"region\", right_on=\"State\", how=\"left\")\n\n# Define color map\ncolors = [\"#68bb59\", \"#acdf87\", \"#fab733\", \"#ff6242\", \"#c61a09\"]\ncmap = LinearSegmentedColormap.from_list(\"custom_cmap\", colors)\n\n# Plot Gun Deaths by State\nfig, ax = plt.subplots(figsize=(16, 10))\ndivider = make_axes_locatable(ax)\ncax = divider.append_axes(\"right\", size=\"3%\", pad=0.2)\n\n# Plot states\nmap_data.plot(column=\"mortality_score\", cmap=cmap, linewidth=0.3, edgecolor=\"black\", ax=ax, legend=True, cax=cax)\n\n# Customize plot\nax.set_title(\"Firearm Mortality by State (2022)\", fontsize=18)\nax.set_xticks([])\nax.set_yticks([])\nax.set_frame_on(False)\n\nplt.show()"
+    "text": "The bar char and map below visualize the distribution of the firearm morality rate across the country.\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Load data\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Define bins and labels\nbins = [0, 10, 15, 20, 25, float('inf')]\nlabels = [\"Very Low\", \"Low\", \"Moderate\", \"High\", \"Very High\"]  # Fixed the syntax error\n\n# Assign bins, ensuring no overlap (excluding the right endpoint)\ngun_deaths['mortality_bin'] = pd.cut(\n    gun_deaths['firearm_mortality_by_state_2022'], bins=bins, labels=labels, right=False\n)\n\n# Count states in each bin\ngun_death_distribution = gun_deaths['mortality_bin'].value_counts().sort_index().reset_index()\ngun_death_distribution.columns = ['mortality_bin', 'State_Count']\n\n# Define colors\ncolors = {\n    \"Very Low\": \"#68bb59\",\n    \"Low\": \"#acdf87\",\n    \"Moderate\": \"#fab733\",\n    \"High\": \"#ff6242\",\n    \"Very High\": \"#c61a09\"\n}\n\n# Plot\ntitle = \"Firearm Mortality by State (2022)\"\nsubtitle = \"Number of States in Each Mortality Range\"\nplt.figure(figsize=(7, 4))  # Slightly increased width for better spacing\nax = sns.barplot(\n    y='mortality_bin', x='State_Count', data=gun_death_distribution,\n    order=labels, palette=colors, edgecolor='black', linewidth=.8  # Increased border width\n)\n\n# Add labels right outside the bars with better spacing\nfor index, value in enumerate(gun_death_distribution['State_Count']):\n    ax.text(value + 0.8, index, str(value), va='center', ha='left', fontsize=12, color='black')\n\nplt.title(f\"{title}\\n{subtitle}\", fontsize=12, weight='normal')  # Unbolded title, smaller font\nplt.xlabel(\"\")\nplt.ylabel(\"\")\nplt.xticks([])\nplt.grid(axis='x', linestyle=\"--\", alpha=0.7)\nplt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis\nplt.show()\n\n\n\n\n\n\n\n\n\nThis plot indicates that there are many more restrictive states than protective states, with a total of 27 states having restrictive policies compared to 18 states with protective policies. This imbalance is particularly evident in the ‘most restrictive’ category, which alone accounts for 16 states.\n\n\nCode\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom mpl_toolkits.axes_grid1 import make_axes_locatable\nfrom matplotlib.colors import LinearSegmentedColormap\n\n# Load dataset\ngun_deaths = pd.read_csv(\"data/merged_data.csv\")\n\n# Ensure state names are lowercase for merging\ngun_deaths[\"State\"] = gun_deaths[\"State\"].str.lower()\n\n# Define mortality bins and labels\nmortality_bins = [0, 10, 15, 20, 25, float(\"inf\")]\nmortality_labels = [1, 2, 3, 4, 5]\n\n# Assign states into mortality categories\ngun_deaths[\"mortality_score\"] = pd.cut(\n    gun_deaths[\"firearm_mortality_by_state_2022\"], \n    bins=mortality_bins, \n    labels=mortality_labels,\n    right=False\n).astype(float)\n\n# Load U.S. state shapefile from Census Bureau\nstates_url = \"https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip\"\nstates_map = gpd.read_file(states_url)\n\n# Ensure lowercase for merging\nstates_map[\"region\"] = states_map[\"NAME\"].str.lower()\n\n# Merge state map with gun deaths data\nmap_data = states_map.merge(gun_deaths, left_on=\"region\", right_on=\"State\", how=\"left\")\n\n# Define color map\ncolors = [\"#68bb59\", \"#acdf87\", \"#fab733\", \"#ff6242\", \"#c61a09\"]\ncmap = LinearSegmentedColormap.from_list(\"custom_cmap\", colors)\n\n# Plot Gun Deaths by State\nfig, ax = plt.subplots(figsize=(16, 10))\ndivider = make_axes_locatable(ax)\ncax = divider.append_axes(\"right\", size=\"3%\", pad=0.2)\n\n# Plot states\nmap_data.plot(column=\"mortality_score\", cmap=cmap, linewidth=0.3, edgecolor=\"black\", ax=ax, legend=True, cax=cax)\n\n# Customize plot\nax.set_title(\"Firearm Mortality by State (2022)\", fontsize=18)\nax.set_xticks([])\nax.set_yticks([])\nax.set_frame_on(False)\n\nplt.show()"
+  },
+  {
+    "objectID": "statistics.html#data-collection",
+    "href": "statistics.html#data-collection",
+    "title": "Statistical Methods and Analysis",
+    "section": "Data Collection",
+    "text": "Data Collection"
+  },
+  {
+    "objectID": "statistics.html#data-cleaning",
+    "href": "statistics.html#data-cleaning",
+    "title": "Statistical Methods and Analysis",
+    "section": "Data Cleaning",
+    "text": "Data Cleaning"
+  },
+  {
+    "objectID": "statistics.html#data-merging",
+    "href": "statistics.html#data-merging",
+    "title": "Statistical Methods and Analysis",
+    "section": "Data Merging",
+    "text": "Data Merging"
+  },
+  {
+    "objectID": "statistics.html#statistical-methods-models",
+    "href": "statistics.html#statistical-methods-models",
+    "title": "Statistical Methods and Analysis",
+    "section": "Statistical Methods & Models",
+    "text": "Statistical Methods & Models"
+  },
+  {
+    "objectID": "index.html#motivation-and-case-studies",
+    "href": "index.html#motivation-and-case-studies",
+    "title": "Gun Violence",
+    "section": "Motivation and Case Studies",
+    "text": "Motivation and Case Studies"
+  },
+  {
+    "objectID": "index.html#research-questions",
+    "href": "index.html#research-questions",
+    "title": "Gun Violence",
+    "section": "Research Questions",
+    "text": "Research Questions\nData Science Question:\nSubquestions:"
+  },
+  {
+    "objectID": "appendix.html#presentation-slides",
+    "href": "appendix.html#presentation-slides",
+    "title": "Appendix",
+    "section": "Presentation Slides",
+    "text": "Presentation Slides"
+  },
+  {
+    "objectID": "appendix.html#data-download",
+    "href": "appendix.html#data-download",
+    "title": "Appendix",
+    "section": "Data Download",
+    "text": "Data Download"
+  },
+  {
+    "objectID": "conclusion.html#limitations",
+    "href": "conclusion.html#limitations",
+    "title": "Conclusion",
+    "section": "Limitations",
+    "text": "Limitations"
+  },
+  {
+    "objectID": "conclusion.html#future-research",
+    "href": "conclusion.html#future-research",
+    "title": "Conclusion",
+    "section": "Future Research",
+    "text": "Future Research"
+  },
+  {
+    "objectID": "conclusion.html#summary",
+    "href": "conclusion.html#summary",
+    "title": "Conclusion",
+    "section": "Summary",
+    "text": "Summary"
+  },
+  {
+    "objectID": "conclusion.html#acknowledgements",
+    "href": "conclusion.html#acknowledgements",
+    "title": "Conclusion",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements"
   }
 ]

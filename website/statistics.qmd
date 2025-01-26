@@ -1,0 +1,19 @@
+---
+title: "Statistical Methods and Analysis"
+format:
+  html:
+    embed-resources: true
+# bibliography: references.bib
+---
+
+## Data Methods
+
+## Data Collection
+
+## Data Cleaning
+
+## Data Merging
+
+## Statistical Methods & Models
+
+

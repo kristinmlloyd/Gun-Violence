@@ -7,7 +7,7 @@ format:
     code-fold: true
 ---
 
-## Problem Objectives
+## Problem & Objectives
 
 The bar char and map below visualize the distribution of the firearm morality rate across the country.
 
@@ -48,7 +48,7 @@ colors = {
 
 # Plot
 title = "Firearm Mortality by State (2022)"
-subtitle = "Number of states in each mortality range"
+subtitle = "Number of States in Each Mortality Range"
 plt.figure(figsize=(7, 4))  # Slightly increased width for better spacing
 ax = sns.barplot(
     y='mortality_bin', x='State_Count', data=gun_death_distribution,
@@ -129,3 +129,14 @@ ax.set_frame_on(False)
 plt.show()
 
 ```
+
+## Motivation and Case Studies
+
+## Research Questions
+
+**Data Science Question:**
+
+**Subquestions:**
+
+
+

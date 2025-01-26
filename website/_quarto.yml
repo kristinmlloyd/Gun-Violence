@@ -11,7 +11,7 @@ website:
     left:
       - href: index.qmd
         text: Introduction
-      - href: eda.qmd
+      - href: statistics.qmd
         text: Statistical Methods
       - text: Results
         menu: 
@@ -21,9 +21,9 @@ website:
             text: Maternal Health
       - href: eda.qmd
         text: Conclusion
-      - href: eda.qmd
+      - href: conclusion.qmd
         text: Bibliography
-      - href: eda.qmd
+      - href: appendix.qmd
         text: Appendix
 
     right:
