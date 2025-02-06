@@ -1,0 +1,239 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"\"\n",
+        "author: “Kristin Lloyd”\n",
+        "format: \n",
+        "  html:\n",
+        "    css: styles.css\n",
+        "    embed-resources: true\n",
+        "    code-fold: true\n",
+        "---"
+      ],
+      "id": "952090e6"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import pandas as pd\n",
+        "\n",
+        "merged_data = pd.read_csv(\"data/merged_data.csv\")"
+      ],
+      "id": "479cb7ad",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(merged_data.columns.tolist())"
+      ],
+      "id": "2327eb9d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import statsmodels.api as sm\n",
+        "\n",
+        "def regression_analysis(df, predictor, response=\"firearm_mortality_by_state_2022\"):\n",
+        "    \n",
+        "    clean_df = df[[predictor, response]].replace([np.inf, -np.inf], np.nan).dropna()\n",
+        "\n",
+        "    plt.figure(figsize=(8, 6))\n",
+        "    sns.regplot(\n",
+        "        x=clean_df[response], \n",
+        "        y=clean_df[predictor], \n",
+        "        scatter_kws={\"alpha\": 0.6}, \n",
+        "        line_kws={\"color\": \"red\"}\n",
+        "    )\n",
+        "\n",
+        "    plt.xlabel(response.replace(\"_\", \" \").title())  \n",
+        "    plt.ylabel(predictor.replace(\"_\", \" \").title())  \n",
+        "    plt.title(f\"Regression Analysis: {predictor.replace('_', ' ')} vs. {response.replace('_', ' ')}\")\n",
+        "    plt.grid(alpha=0.3)\n",
+        "    plt.show()\n",
+        "\n",
+        "    X = clean_df[response]  \n",
+        "    y = clean_df[predictor] \n",
+        "    X = sm.add_constant(X)  \n",
+        "\n",
+        "    model = sm.OLS(y, X).fit()\n",
+        "    print(model.summary())"
+      ],
+      "id": "0130d206",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"state_ranking_in_mental_health_in_adults\")"
+      ],
+      "id": "cf2a0a31",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"drug_overdose_mortality_rate\")"
+      ],
+      "id": "9dc6c745",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"unemployment_rate\")"
+      ],
+      "id": "0d28b1b3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"labor_participation_women_percentage\")"
+      ],
+      "id": "b49cdb4b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"missing_person_by_state\")"
+      ],
+      "id": "f33abf30",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"gun_ownership_rates_per_state\")"
+      ],
+      "id": "5c2160bc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"suicide_by_firearms\")"
+      ],
+      "id": "d29f458d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"firearm_mortality_rate_children_one_to_nine_years_old\")"
+      ],
+      "id": "95683a83",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# regression_analysis(merged_data, \"dv_people_to_shelter\")"
+      ],
+      "id": "3e9692b2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"dv_spending_per_person\")"
+      ],
+      "id": "ad89686a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"alcohol_related_death_rate\")"
+      ],
+      "id": "5eb9a752",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"dv_spending_per_person\")"
+      ],
+      "id": "3e16a999",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"school_shootings\")"
+      ],
+      "id": "a9395989",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"access_to_mental_health_care_ranking\")"
+      ],
+      "id": "ae22f6a1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "regression_analysis(merged_data, \"state_ranking_in_mental_health_in_youth\")"
+      ],
+      "id": "d467f788",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/opt/miniconda3/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

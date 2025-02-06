@@ -10,9 +10,6 @@ format:
 
 ```{python}
 
-#| fig-width: 2
-#| fig-height: 2
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -32,37 +29,26 @@ print(merged_data.columns.tolist())
 import statsmodels.api as sm
 
 def regression_analysis(df, predictor, response="firearm_mortality_by_state_2022"):
-    """
-    Plots a regression scatterplot and prints the regression summary.
     
-    Parameters:
-    df (pd.DataFrame): The dataset
-    predictor (str): The column name of the independent variable (default: "firearm_mortality_by_state_2022")
-    response (str): The column name of the dependent variable
-    """
-    
-    # Drop rows where predictor or response has NaN or Inf
     clean_df = df[[predictor, response]].replace([np.inf, -np.inf], np.nan).dropna()
 
-    # Scatter plot with regression line (Swapped X and Y)
     plt.figure(figsize=(8, 6))
     sns.regplot(
-        x=clean_df[response],  # Swapped
-        y=clean_df[predictor],  # Swapped
+        x=clean_df[response], 
+        y=clean_df[predictor], 
         scatter_kws={"alpha": 0.6}, 
         line_kws={"color": "red"}
     )
 
-    plt.xlabel(response.replace("_", " ").title())  # Swapped
-    plt.ylabel(predictor.replace("_", " ").title())  # Swapped
+    plt.xlabel(response.replace("_", " ").title())  
+    plt.ylabel(predictor.replace("_", " ").title())  
     plt.title(f"Regression Analysis: {predictor.replace('_', ' ')} vs. {response.replace('_', ' ')}")
     plt.grid(alpha=0.3)
     plt.show()
 
-    # Linear regression model (Swapped X and Y)
-    X = clean_df[response]  # Swapped
-    y = clean_df[predictor]  # Swapped
-    X = sm.add_constant(X)  # Add intercept
+    X = clean_df[response]  
+    y = clean_df[predictor] 
+    X = sm.add_constant(X)  
 
     model = sm.OLS(y, X).fit()
     print(model.summary())
