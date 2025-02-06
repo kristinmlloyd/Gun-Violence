@@ -1,52 +1,52 @@
-State,prohibition_for_stalkers,abusers_turn_in_gun_after_conviction,prohibition_for_domestic_abusers,prohibition_for_convicted_domestic_abusers,waiting_period,mental_health_in_background_check,funding_for_violence_intervention,no_purchase_after_violent_offense,age_requirement,mentaI_illness_prohibitor,hate_crime_prohibitor,gun_removal_program,fugitive_from_justice_prohibitor,felony prohibitor,restraining_order_prohibitor,no_open_carry,no_guns_in_k_through_twelve_schools,no_guns_at_demonstrations,no_guns_on_college_campuses,bar_concealed_carry_by_people_with_violent_misdemeanors,high_capacity_magazines_prohibited,dealer_lisence_required,asault_weapons_prohibited,secure_storage_child_access_laws,rejected_shoot_first_laws,red_flag_laws,background_check_or_purchase_permit,concealed_carry_permit_required,extreme_risk_law
-Alabama,0,0,1,1,0,1,0,1,0,1,0,0,0,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0
-Alaska,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
-Arizona,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
-Arkansas,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
-California,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Colorado,1,1,1,1,1,1,1,1,1,0,1,0,0,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1
-Connecticut,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Delaware,1,0,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1
-District of Columbia,0,0,1,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,NA,NA,NA
-Florida,0,0,1,0,1,1,1,0,1,1,1,0,0,1,0,1,0,1,1,1,0,0,0,1,0,1,0,0,1
-Georgia,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Hawaii,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1
-Idaho,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Illinois,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Indiana,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0,1,0,1,0,0,1
-Iowa,0,1,1,1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
-Kansas,0,0,1,1,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Kentucky,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
-Louisiana,0,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
-Maine,0,0,1,1,1,1,0,1,0,1,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,0,1,0,0
-Maryland,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Massachusetts,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Michigan,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,1,1,0,0,0,1,0,1,1,1,1
-Minnesota,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,0,0,1,0,0,0,1,1,1,1,1,1
-Mississippi,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Missouri,0,0,0,0,0,1,1,0,0,0,1,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0
-Montana,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
-Nebraska,0,0,0,1,0,1,1,0,1,0,1,0,1,1,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0
-Nevada,0,1,1,1,0,1,1,0,1,1,0,0,1,1,0,0,1,0,1,1,0,0,0,1,0,1,1,1,1
-New Hampshire,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0
-New Jersey,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-New Mexico,1,0,1,1,1,1,1,0,1,0,0,0,0,1,0,0,1,0,1,1,0,0,0,1,1,1,1,1,1
-New York,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-North Carolina,0,0,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,1,1,1,0,0,0,1,0,0,0,1,0
-North Dakota,0,0,0,0,0,1,1,1,0,1,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0
-Ohio,0,0,0,0,0,0,1,0,1,1,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0
-Oklahoma,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0
-Oregon,1,1,1,1,0,1,1,1,1,1,0,0,0,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,1
-Pennsylvania,1,1,1,1,0,1,1,1,1,1,1,0,1,0,0,0,1,1,1,0,0,1,0,0,0,0,1,1,0
-Rhode Island,1,1,1,1,1,1,1,0,1,1,0,0,1,0,0,1,1,0,1,0,1,1,0,1,1,1,1,1,1
-South Carolina,1,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0
-South Dakota,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
-Tennessee,0,1,1,1,0,1,1,0,0,1,1,0,1,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0
-Texas,1,0,1,1,0,1,1,0,0,0,0,0,0,1,1,0,0,1,0,1,0,0,0,1,0,0,0,0,0
-Utah,0,0,1,1,0,1,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Vermont,1,0,1,1,1,1,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,1,1,1,1,0,1
-Virginia,0,0,1,1,0,1,1,0,1,1,1,0,0,1,0,0,1,1,1,1,0,0,0,1,1,1,1,1,1
-Washington,1,0,1,1,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1
-West Virginia,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,0,0,0,0,1,0,0,0,0
-Wisconsin,1,0,1,0,0,1,1,0,0,1,1,0,0,1,0,0,1,0,0,0,0,0,0,1,1,0,0,1,0
-Wyoming,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+State,gun_law_strength,prohibition_for_stalkers,abusers_turn_in_gun_after_conviction,prohibition_for_domestic_abusers,prohibition_for_convicted_domestic_abusers,waiting_period,mental_health_in_background_check,funding_for_violence_intervention,no_purchase_after_violent_offense,age_requirement,mentaI_illness_prohibitor,hate_crime_prohibitor,gun_removal_program,fugitive_from_justice_prohibitor,felony_prohibitor,restraining_order_prohibitor,no_open_carry,no_guns_in_k_through_twelve_schools,no_guns_at_demonstrations,no_guns_on_college_campuses,bar_concealed_carry_by_people_with_violent_misdemeanors,high_capacity_magazines_prohibited,dealer_lisence_required,asault_weapons_prohibited,secure_storage_child_access_laws,rejected_shoot_first_laws,red_flag_laws,background_check_or_purchase_permit,concealed_carry_permit_required,extreme_risk_law
+Alabama,weak_systems,0,0,1,1,0,1,0,1,0,1,0,0,0,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0
+Alaska,national_failures,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
+Arizona,national_failures,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
+Arkansas,national_failures,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
+California,national_leader,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Colorado,making_progress,1,1,1,1,1,1,1,1,1,0,1,0,0,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1
+Connecticut,national_leader,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Delaware,making_progress,1,0,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1
+District of Columbia,NA,0,0,1,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,NA,NA,NA
+Florida,missing_key_laws,0,0,1,0,1,1,1,0,1,1,1,0,0,1,0,1,0,1,1,1,0,0,0,1,0,1,0,0,1
+Georgia,national_failures,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hawaii,national_leader,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1
+Idaho,national_failures,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Illinois,national_leader,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Indiana,weak_systems,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0,1,0,1,0,0,1
+Iowa,weak_systems,0,1,1,1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+Kansas,national_failures,0,0,1,1,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Kentucky,national_failures,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
+Louisiana,weak_systems,0,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
+Maine,missing_key_laws,0,0,1,1,1,1,0,1,0,1,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,0,1,0,0
+Maryland,national_leader,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Massachusetts,national_leader,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Michigan,making_progress,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,1,1,0,0,0,1,0,1,1,1,1
+Minnesota,making_progress,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,0,0,1,0,0,0,1,1,1,1,1,1
+Mississippi,national_failures,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Missouri,national_failures,0,0,0,0,0,1,1,0,0,0,1,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0
+Montana,national_failures,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
+Nebraska,missing_key_laws,0,0,0,1,0,1,1,0,1,0,1,0,1,1,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0
+Nevada,making_progress,0,1,1,1,0,1,1,0,1,1,0,0,1,1,0,0,1,0,1,1,0,0,0,1,0,1,1,1,1
+New Hampshire,national_failures,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0
+New Jersey,national_leader,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+New Mexico,making_progress,1,0,1,1,1,1,1,0,1,0,0,0,0,1,0,0,1,0,1,1,0,0,0,1,1,1,1,1,1
+New York,national_leader,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+North Carolina,missing_key_laws,0,0,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,1,1,1,0,0,0,1,0,0,0,1,0
+North Dakota,weak_systems,0,0,0,0,0,1,1,1,0,1,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0
+Ohio,weak_systems,0,0,0,0,0,0,1,0,1,1,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0
+Oklahoma,national_failures,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0
+Oregon,making_progress,1,1,1,1,0,1,1,1,1,1,0,0,0,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,1
+Pennsylvania,making_progress,1,1,1,1,0,1,1,1,1,1,1,0,1,0,0,0,1,1,1,0,0,1,0,0,0,0,1,1,0
+Rhode Island,making_progress,1,1,1,1,1,1,1,0,1,1,0,0,1,0,0,1,1,0,1,0,1,1,0,1,1,1,1,1,1
+South Carolina,weak_systems,1,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0
+South Dakota,national_failures,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+Tennessee,weak_systems,0,1,1,1,0,1,1,0,0,1,1,0,1,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0
+Texas,weak_systems,1,0,1,1,0,1,1,0,0,0,0,0,0,1,1,0,0,1,0,1,0,0,0,1,0,0,0,0,0
+Utah,weak_systems,0,0,1,1,0,1,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Vermont,making_progress,1,0,1,1,1,1,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,1,1,1,1,0,1
+Virginia,making_progress,0,0,1,1,0,1,1,0,1,1,1,0,0,1,0,0,1,1,1,1,0,0,0,1,1,1,1,1,1
+Washington,national_leader,1,0,1,1,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1
+West Virginia,weak_systems,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,0,0,0,0,1,0,0,0,0
+Wisconsin,missing_key_laws,1,0,1,0,0,1,1,0,0,1,1,0,0,1,0,0,1,0,0,0,0,0,0,1,1,0,0,1,0
+Wyoming,national_failures,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0

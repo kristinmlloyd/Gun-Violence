@@ -9,7 +9,7 @@ format:
 
 ## Problem & Objectives
 
-The bar char and map below visualize the distribution of the firearm morality rate across the country.
+Firearm mortality remains a pressing public health issue in the United States, with gun-related deaths accounting for a significant portion of homicides, suicides, and accidental fatalities. The complexity of this issue extends beyond crime statistics, encompassing social, economic, and policy-driven factors that influence gun violence trends. This project aims to analyze firearm mortality rates across U.S. states and examine the impact of gun control policies, domestic violence-related firearm deaths, and access to mental health resources. By identifying key contributing factors, this study seeks to provide insights into the effectiveness of existing regulations and potential strategies to mitigate firearm-related deaths. This project will contribute to the broader discourse on public safety and policy effectiveness in reducing gun violence.
 
 ```{python}
 

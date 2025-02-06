@@ -1,52 +1,52 @@
-State,missing_person_by_state,gun_ownership_rates_per_state,suicide_by_firearms,firearm_mortality_by_state_2022,school_shootings_by_state_2024,firearm_mortality_rate_children_one_to_nine_years_old
-Alabama,4,55.5,11,25.5,1,11.9
-Alaska,42.16,64.5,18,22.4,0,NA
-Arizona,12.28,46.3,10,20.1,0,6
-Arkansas,6.53,57.2,12,21.9,0,9
-California,,28.3,4,8.6,3,3.1
-Colorado,4.98,45.1,11,17.1,0,6.2
-Connecticut,5.43,23.6,3,6.9,0,2.8
-Delaware,5.62,34.4,6,11.9,0,NA
-District of Columbia,NA,NA,NA,21.4,1,NA
-Florida,5.52,35.3,7,14,2,5
-Georgia,2.26,49.2,9,19.7,3,9
-Hawaii,7.47,14.9,2,4.5,0,NA
-Idaho,5.12,60.1,15,17,0,4
-Illinois,2.54,27.8,4,14.4,1,8.3
-Indiana,2.54,44.8,9,17.4,0,8.1
-Iowa,2.68,43.6,8,11.2,1,4.5
-Kansas,2.76,48.9,10,16.8,1,8.4
-Kentucky,5.49,54.6,11,18.8,1,8.6
-Louisiana,5.84,53.1,9,28.2,2,17.6
-Maine,7.75,46.8,9,11.7,0,NA
-Maryland,2.97,30.2,4,13.6,1,5
-Massachusetts,1.81,14.7,2,3.7,0,NA
-Michigan,5.54,40.2,7,15,0,5.1
-Minnesota,3.13,42.8,6,9.6,0,3.1
-Mississippi,3.92,55.5,9,29.6,0,15.3
-Missouri,5.11,48.8,11,24.2,0,10.3
-Montana,6.23,66.3,18,23.9,0,11.6
-Nebraska,3.09,45.2,7,12.2,1,4.3
-Nevada,5.98,47.3,11,18.9,0,5.3
-New Hampshire,2.49,41.1,8,10.1,0,NA
-New Jersey,3.23,14.7,2,5,1,2.1
-New Mexico,6.78,46.2,14,27.3,1,9.3
-New York,3.11,19.9,2,5.3,2,2.1
-North Carolina,3.02,45.8,8,16.8,1,8.7
-North Dakota,3.97,55.1,10,16.4,0,NA
-Ohio,3.05,40,7,15.6,0,7.9
-Oklahoma,6.22,54.7,13,19.8,0,7.5
-Oregon,10.23,50.8,10,14.4,0,3.8
-Pennsylvania,3.1,40.7,6,14.7,0,6.2
-Rhode Island,1.83,14.8,3,3.1,0,NA
-South Carolina,3.43,49.4,10,20.8,0,10.6
-South Dakota,2.49,55.3,10,15.7,0,
-Tennessee,5.06,51.6,11,20.5,0,9.2
-Texas,4.09,45.7,8,15.3,5,6.3
-Utah,3.13,46.8,11,13.7,1,3.9
-Vermont,8.34,50.5,10,12,0,NA
-Virginia,2.74,44.6,8,14.9,1,6.9
-Washington,8.21,42.1,8,12.4,2,4.2
-West Virginia,6.8,58.5,12,16.2,0,NA
-Wisconsin,2.52,45.3,7,14,2,6.1
-Wyoming,7.72,66.2,21,20.4,0,NA
+State,domestic_violence_percentage,num_schools,school_shootings,missing_person_by_state,gun_ownership_rates_per_state,suicide_by_firearms,firearm_mortality_by_state_2022,school_shootings_by_state_2024,firearm_mortality_rate_children_one_to_nine_years_old
+Alabama,37.5,,76,4,55.5,11,25.5,1,11.9
+Alaska,43.3,,NA,42.16,64.5,18,22.4,0,NA
+Arizona,42.6,,31,12.28,46.3,10,20.1,0,6
+Arkansas,40.8,,36,6.53,57.2,12,21.9,0,9
+California,34.9,,277,,28.3,4,8.6,3,3.1
+Colorado,36.8,,44,4.98,45.1,11,17.1,0,6.2
+Connecticut,37.7,,29,5.43,23.6,3,6.9,0,2.8
+Delaware,37.6,,22,5.62,34.4,6,11.9,0,NA
+District of Columbia,NA,,NA,NA,NA,NA,21.4,1,NA
+Florida,37.9,,159,5.52,35.3,7,14,2,5
+Georgia,37.4,,112,2.26,49.2,9,19.7,3,9
+Hawaii,34.7,,NA,7.47,14.9,2,4.5,0,NA
+Idaho,33,,12,5.12,60.1,15,17,0,4
+Illinois,41.5,,152,2.54,27.8,4,14.4,1,8.3
+Indiana,42.5,,62,2.54,44.8,9,17.4,0,8.1
+Iowa,35.3,,23,2.68,43.6,8,11.2,1,4.5
+Kansas,45.3,,28,2.76,48.9,10,16.8,1,8.4
+Kentucky,45.3,,37,5.49,54.6,11,18.8,1,8.6
+Louisiana,35.9,,84,5.84,53.1,9,28.2,2,17.6
+Maine,39.3,,7,7.75,46.8,9,11.7,0,NA
+Maryland,34.4,,99,2.97,30.2,4,13.6,1,5
+Massachusetts,33.9,,29,1.81,14.7,2,3.7,0,NA
+Michigan,36.1,,119,5.54,40.2,7,15,0,5.1
+Minnesota,33.9,,33,3.13,42.8,6,9.6,0,3.1
+Mississippi,39.7,,36,3.92,55.5,9,29.6,0,15.3
+Missouri,41.8,,64,5.11,48.8,11,24.2,0,10.3
+Montana,37.2,,11,6.23,66.3,18,23.9,0,11.6
+Nebraska,33.7,,16,3.09,45.2,7,12.2,1,4.3
+Nevada,43.8,,26,5.98,47.3,11,18.9,0,5.3
+New Hampshire,34.7,,8,2.49,41.1,8,10.1,0,NA
+New Jersey,35.8,,32,3.23,14.7,2,5,1,2.1
+New Mexico,37.6,,29,6.78,46.2,14,27.3,1,9.3
+New York,31.7,,119,3.11,19.9,2,5.3,2,2.1
+North Carolina,35.2,,110,3.02,45.8,8,16.8,1,8.7
+North Dakota,29.7,,3,3.97,55.1,10,16.4,0,NA
+Ohio,38,,143,3.05,40,7,15.6,0,7.9
+Oklahoma,40.1,,31,6.22,54.7,13,19.8,0,7.5
+Oregon,39.8,,37,10.23,50.8,10,14.4,0,3.8
+Pennsylvania,37.1,,128,3.1,40.7,6,14.7,0,6.2
+Rhode Island,32.6,,8,1.83,14.8,3,3.1,0,NA
+South Carolina,42.3,,58,3.43,49.4,10,20.8,0,10.6
+South Dakota,33.7,,6,2.49,55.3,10,15.7,0,
+Tennessee,39.6,,109,5.06,51.6,11,20.5,0,9.2
+Texas,40.1,,237,4.09,45.7,8,15.3,5,6.3
+Utah,33.6,,25,3.13,46.8,11,13.7,1,3.9
+Vermont,39.2,,6,8.34,50.5,10,12,0,NA
+Virginia,33.6,,70,2.74,44.6,8,14.9,1,6.9
+Washington,41.4,,67,8.21,42.1,8,12.4,2,4.2
+West Virginia,39.4,,10,6.8,58.5,12,16.2,0,NA
+Wisconsin,36.3,,48,2.52,45.3,7,14,2,6.1
+Wyoming,33.9,,2,7.72,66.2,21,20.4,0,NA

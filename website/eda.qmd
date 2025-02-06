@@ -13,6 +13,49 @@ format:
 #| fig-width: 2
 #| fig-height: 2
 
+merged_data = pd.read_csv("data/merged_data.csv")
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# Ensure gun law strength is categorical
+merged_data['gun_law_strength'] = pd.Categorical(merged_data['gun_law_strength'], 
+    categories=["national_failures", "weak_systems", "making_progress", "missing_key_laws", "national_leader"],
+    ordered=True
+)
+
+palette = {
+    "national_failures": "#ff0000", 
+    "weak_systems": "#c61a09", 
+    "making_progress": "#fab733", 
+    "missing_key_laws": "#68bb59", 
+    "national_leader": "#1c7416"
+}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    x="gun_law_strength",
+    y="firearm_mortality_by_state_2022",
+    data=merged_data,
+    order=["national_failures","weak_systems", "making_progress", "missing_key_laws", "national_leader"],
+    palette=palette  
+)
+
+plt.xticks(rotation=25)
+plt.xlabel("Gun Law Strength Category")
+plt.ylabel("Firearm Mortality Rate (2022)")
+plt.title("Firearm Mortality Rates by Gun Law Strength")
+plt.grid(axis="y", linestyle="--", alpha=0.6)
+plt.show()
+
+```
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -76,6 +119,60 @@ sns.boxplot(
 
 # Format plot
 plt.title("State Ranking in Mental Health in Adults by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("State Ranking in Mental Health (Lower is Better)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='state_ranking_in_mental_health_in_youth', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("State Ranking in Mental Health in Youth by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("State Ranking in Mental Health (Lower is Better)", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='access_to_mental_health_care_ranking', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("State Ranking in Access to Mental Health by Firearm Mortality Category", fontsize=14)
 plt.xlabel("Firearm Mortality Category", fontsize=12)
 plt.ylabel("State Ranking in Mental Health (Lower is Better)", fontsize=12)
 plt.xticks(rotation=45, fontsize=10)
@@ -303,6 +400,68 @@ plt.grid(axis='y', linestyle='--', alpha=0.7)
 
 # Show plot
 plt.show()
+
+```
+
+```{python}
+
+print(merged_data.columns.tolist())
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='school_shootings', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("School Shootings by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("School Shootings", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+Should do this by num of schools?
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=merged_data, 
+    x='mortality_category', 
+    y='alcohol_related_death_rate', 
+    palette=palette,
+    width=0.6
+)
+
+# Format plot
+plt.title("Alcohol Related Death Rate by Firearm Mortality Category", fontsize=14)
+plt.xlabel("Firearm Mortality Category", fontsize=12)
+plt.ylabel("Alcohol Related Death Rate", fontsize=12)
+plt.xticks(rotation=45, fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.show()
+
+```
+
+```{python}
+
+
 
 ```
 
