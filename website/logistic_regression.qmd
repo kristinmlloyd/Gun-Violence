@@ -1,0 +1,22 @@
+---
+title: ""
+author: “Kristin Lloyd”
+format: 
+  html:
+    css: styles.css
+    embed-resources: true
+    code-fold: true
+---
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
+merged_data = pd.read_csv("data/merged_data.csv")
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+```

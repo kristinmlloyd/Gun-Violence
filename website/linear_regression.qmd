@@ -1,0 +1,161 @@
+---
+title: ""
+author: “Kristin Lloyd”
+format: 
+  html:
+    css: styles.css
+    embed-resources: true
+    code-fold: true
+---
+
+```{python}
+
+#| fig-width: 2
+#| fig-height: 2
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+merged_data = pd.read_csv("data/merged_data.csv")
+
+```
+
+```{python}
+
+print(merged_data.columns.tolist())
+
+```
+
+```{python}
+
+import statsmodels.api as sm
+
+def regression_analysis(df, predictor, response="firearm_mortality_by_state_2022"):
+    """
+    Plots a regression scatterplot and prints the regression summary.
+    
+    Parameters:
+    df (pd.DataFrame): The dataset
+    predictor (str): The column name of the independent variable (default: "firearm_mortality_by_state_2022")
+    response (str): The column name of the dependent variable
+    """
+    
+    # Drop rows where predictor or response has NaN or Inf
+    clean_df = df[[predictor, response]].replace([np.inf, -np.inf], np.nan).dropna()
+
+    # Scatter plot with regression line (Swapped X and Y)
+    plt.figure(figsize=(8, 6))
+    sns.regplot(
+        x=clean_df[response],  # Swapped
+        y=clean_df[predictor],  # Swapped
+        scatter_kws={"alpha": 0.6}, 
+        line_kws={"color": "red"}
+    )
+
+    plt.xlabel(response.replace("_", " ").title())  # Swapped
+    plt.ylabel(predictor.replace("_", " ").title())  # Swapped
+    plt.title(f"Regression Analysis: {predictor.replace('_', ' ')} vs. {response.replace('_', ' ')}")
+    plt.grid(alpha=0.3)
+    plt.show()
+
+    # Linear regression model (Swapped X and Y)
+    X = clean_df[response]  # Swapped
+    y = clean_df[predictor]  # Swapped
+    X = sm.add_constant(X)  # Add intercept
+
+    model = sm.OLS(y, X).fit()
+    print(model.summary())
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "state_ranking_in_mental_health_in_adults")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "drug_overdose_mortality_rate")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "unemployment_rate")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "labor_participation_women_percentage")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "missing_person_by_state")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "gun_ownership_rates_per_state")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "suicide_by_firearms")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "firearm_mortality_rate_children_one_to_nine_years_old")
+
+```
+
+```{python}
+
+# regression_analysis(merged_data, "dv_people_to_shelter")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "dv_spending_per_person")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "alcohol_related_death_rate")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "dv_spending_per_person")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "school_shootings")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "access_to_mental_health_care_ranking")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "state_ranking_in_mental_health_in_youth")
+
+```
+
