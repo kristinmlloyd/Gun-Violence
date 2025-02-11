@@ -120,8 +120,6 @@ import pandas as pd
 df = pd.read_csv("data/merged_data.csv")
 print(df["dv_people_to_shelter"].head(10))
 
-
-
 ```
 
 ```{python}
@@ -169,6 +167,12 @@ regression_analysis(merged_data, "state_ranking_in_mental_health_in_youth")
 ```{python}
 
 regression_analysis(merged_data, "gun_policy_strength")
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "mental health_score")
 
 ```
 
