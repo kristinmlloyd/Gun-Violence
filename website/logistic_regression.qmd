@@ -8,15 +8,119 @@ format:
     code-fold: true
 ---
 
+
+
 ```{python}
 
-#| fig-width: 2
-#| fig-height: 2
-
-merged_data = pd.read_csv("data/merged_data.csv")
-
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pandas as pd
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+# Load dataset
+merged_data = pd.read_csv("data/merged_data.csv")
+
+# Define function for individual logistic regressions
+def run_individual_logistic_regressions(df, predictors, response):
+    """
+    Runs a separate logistic regression for each predictor variable and prints key results.
+    """
+    results = []
+
+    for predictor in predictors:
+        # Drop NaNs for the current predictor
+        X = df[[predictor]].replace([np.inf, -np.inf], np.nan).dropna()
+        y = df[response].loc[X.index]  # Ensure y matches X
+        X = sm.add_constant(X)  # Add intercept
+
+        try:
+            model = sm.Logit(y, X).fit(disp=0)  # Suppress output
+            p_value = model.pvalues[predictor]
+            coef = model.params[predictor]
+            results.append({"Variable": predictor, "Coefficient": coef, "p-value": p_value})
+        except Exception as e:
+            print(f"Skipping {predictor} due to error: {e}")
+
+    # Convert results to DataFrame and sort by p-value
+    results_df = pd.DataFrame(results).sort_values(by="p-value")
+
+    # Print results in the console
+    print(results_df)
+
+    return results_df
+
+# Define binary predictors
+binary_predictors = [
+    "prohibition_for_stalkers", "abusers_turn_in_gun_after_conviction", "prohibition_for_domestic_abusers",
+    "prohibition_for_convicted_domestic_abusers", "waiting_period", "mental_health_in_background_check",
+    "funding_for_violence_intervention", "no_purchase_after_violent_offense", "age_requirement",
+    "mentaI_illness_prohibitor", "hate_crime_prohibitor", "gun_removal_program", "fugitive_from_justice_prohibitor",
+    "felony_prohibitor", "restraining_order_prohibitor", "no_open_carry", "no_guns_in_k_through_twelve_schools",
+    "no_guns_at_demonstrations", "no_guns_on_college_campuses", "bar_concealed_carry_by_people_with_violent_misdemeanors",
+    "high_capacity_magazines_prohibited", "dealer_lisence_required", "asault_weapons_prohibited",
+    "secure_storage_child_access_laws", "rejected_shoot_first_laws", "red_flag_laws", "background_check_or_purchase_permit",
+    "concealed_carry_permit_required", "extreme_risk_law"
+]
+
+# Ensure response variable is binary
+merged_data["firearm_mortality_above_median"] = (
+    merged_data["firearm_mortality_by_state_2022"] > merged_data["firearm_mortality_by_state_2022"].median()
+).astype(int)
+
+# Run logistic regression analysis
+logistic_results = run_individual_logistic_regressions(merged_data, binary_predictors, "firearm_mortality_above_median")
+
+# Check sum of specific variables
+print(merged_data[['gun_removal_program', 'asault_weapons_prohibited']].sum())
+
+# Print all column names
+print(merged_data.columns.tolist())
+
+# Check Variance Inflation Factor (VIF) for multicollinearity
+X = merged_data[binary_predictors].replace([np.inf, -np.inf], np.nan).dropna()
+X = sm.add_constant(X)
+
+vif_data = pd.DataFrame()
+vif_data["Variable"] = X.columns
+vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+
+print(vif_data)
+
+# Check missing values and infinite values
+print("Missing values:\n", X.isna().sum())
+print("Infinite values:\n", X.replace([np.inf, -np.inf], np.nan).isna().sum())
+
+```
+
+```{python}
+
+problem w two variables as not a lot of variance
+
+```
+
+```{python}
+
+
+```
+
+```{python}
+
+
+```
+
+```{python}
+
+
+```
+
+```{python}
+
+
+```
+
+```{python}
+
 
 ```
