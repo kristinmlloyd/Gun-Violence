@@ -13,8 +13,18 @@ format:
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import numpy as np
+import statsmodels.api as sm
 
+# Load data
 merged_data = pd.read_csv("data/merged_data.csv")
+
+# Convert 'dv_people_to_shelter' to numeric, removing commas if present
+if "dv_people_to_shelter" in merged_data.columns:
+    merged_data["dv_people_to_shelter"] = merged_data["dv_people_to_shelter"].astype(str).str.replace(",", "").astype(float)
+
+# Print column names for debugging
+print(merged_data.columns.tolist())
 
 ```
 
@@ -105,7 +115,18 @@ regression_analysis(merged_data, "firearm_mortality_rate_children_one_to_nine_ye
 
 ```{python}
 
-# regression_analysis(merged_data, "dv_people_to_shelter")
+import pandas as pd
+
+df = pd.read_csv("data/merged_data.csv")
+print(df["dv_people_to_shelter"].head(10))
+
+
+
+```
+
+```{python}
+
+regression_analysis(merged_data, "dv_people_to_shelter")
 
 ```
 
@@ -145,3 +166,78 @@ regression_analysis(merged_data, "state_ranking_in_mental_health_in_youth")
 
 ```
 
+```{python}
+
+regression_analysis(merged_data, "gun_policy_strength")
+
+```
+
+### multivariate
+
+```{python}
+
+import statsmodels.api as sm
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+# Define predictor list
+predictors = [
+    "gun_ownership_rates_per_state",
+    "alcohol_related_death_rate",
+    "access_to_mental_health_care_ranking",
+    "labor_participation_women_percentage",
+    "state_ranking_in_mental_health_in_adults",
+    "gun_policy_strength"
+]
+
+# Select relevant data
+X = merged_data[predictors]
+y = merged_data["firearm_mortality_by_state_2022"]
+
+# Remove rows with NaN or infinite values
+X = X.replace([np.inf, -np.inf], np.nan).dropna()
+y = y.loc[X.index]  # Ensure `y` matches the cleaned `X`
+
+# Add constant for intercept
+X = sm.add_constant(X)
+
+# Fit multivariate regression model
+model = sm.OLS(y, X).fit()
+
+# Print model summary
+print(model.summary())
+
+# Check for multicollinearity (VIF)
+vif_data = pd.DataFrame()
+vif_data["Variable"] = X.columns
+vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+print("\nVariance Inflation Factor (VIF):\n", vif_data)
+
+# Plot residual distribution
+plt.figure(figsize=(8, 5))
+sns.histplot(model.resid, kde=True, bins=15, color="blue", alpha=0.6)
+plt.title("Residual Distribution")
+plt.xlabel("Residuals")
+plt.ylabel("Density")
+plt.show()
+
+# Compute Cook's Distance
+influence = model.get_influence()
+cooks_d, _ = influence.cooks_distance
+
+# Plot Cook's Distance
+plt.figure(figsize=(8, 5))
+plt.stem(np.arange(len(cooks_d)), cooks_d, markerfmt=",")
+plt.xlabel("Observation Index")
+plt.ylabel("Cook's Distance")
+plt.title("Cook’s Distance (Identifying Outliers)")
+plt.show()
+
+# Identify high-influence points (rule of thumb: Cook’s D > 4/n)
+influential_points = np.where(cooks_d > (4 / len(cooks_d)))[0]
+print("\nInfluential Data Points:", influential_points)
+
+```
