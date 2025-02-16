@@ -1,0 +1,252 @@
+---
+title: "Gun Policy Impact on Firearm Mortality: A Statistical Analysis"
+author: "Your Name"
+format: 
+  html:
+    css: styles.css
+    embed-resources: true
+    code-fold: true
+---
+
+## Introduction
+
+This analysis examines the relationship between state-level gun policies and firearm mortality rates. We'll walk through our analytical process, addressing statistical challenges and refining our model to produce reliable insights.
+
+## Initial Model: Individual Policy Analysis
+
+First, let's examine each policy's individual relationship with firearm mortality:
+
+```{python}
+
+#| label: initial-model
+#| warning: false
+
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+merged_data = pd.read_csv("data/merged_data.csv")
+
+# Define binary predictors
+binary_predictors = [
+    "prohibition_for_stalkers", "abusers_turn_in_gun_after_conviction", "prohibition_for_domestic_abusers",
+    "prohibition_for_convicted_domestic_abusers", "waiting_period", "mental_health_in_background_check",
+    "funding_for_violence_intervention", "no_purchase_after_violent_offense", "age_requirement",
+    "mentaI_illness_prohibitor", "hate_crime_prohibitor", "gun_removal_program", "fugitive_from_justice_prohibitor",
+    "felony_prohibitor", "restraining_order_prohibitor", "no_open_carry", "no_guns_in_k_through_twelve_schools",
+    "no_guns_at_demonstrations", "no_guns_on_college_campuses", "bar_concealed_carry_by_people_with_violent_misdemeanors",
+    "high_capacity_magazines_prohibited", "dealer_lisence_required", "asault_weapons_prohibited",
+    "secure_storage_child_access_laws", "rejected_shoot_first_laws", "red_flag_laws", "background_check_or_purchase_permit",
+    "concealed_carry_permit_required", "extreme_risk_law"
+]
+
+# Create binary outcome
+merged_data["firearm_mortality_above_median"] = (
+    merged_data["firearm_mortality_by_state_2022"] > 
+    merged_data["firearm_mortality_by_state_2022"].median()
+).astype(int)
+
+# Run individual regressions
+def run_individual_logistic_regressions(df, predictors, response):
+    results = []
+    for predictor in predictors:
+        X = df[[predictor]].replace([np.inf, -np.inf], np.nan).dropna()
+        y = df[response].loc[X.index]
+        X = sm.add_constant(X)
+        
+        try:
+            model = sm.Logit(y, X).fit(disp=0)
+            results.append({
+                "Variable": predictor,
+                "Coefficient": model.params[predictor],
+                "p-value": model.pvalues[predictor]
+            })
+        except Exception as e:
+            print(f"Skipping {predictor}: {e}")
+            
+    return pd.DataFrame(results).sort_values(by="p-value")
+
+# Run analysis and display results
+logistic_results = run_individual_logistic_regressions(
+    merged_data, binary_predictors, "firearm_mortality_above_median"
+)
+print(logistic_results)
+```
+
+## Multicollinearity Assessment
+
+Our initial analysis revealed significant multicollinearity issues. Let's examine the Variance Inflation Factors (VIF):
+
+```{python}
+#| label: vif-analysis
+#| warning: false
+
+X = merged_data[binary_predictors].replace([np.inf, -np.inf], np.nan).dropna()
+X = sm.add_constant(X)
+
+vif_data = pd.DataFrame({
+    "Variable": X.columns,
+    "VIF": [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+}).sort_values("VIF", ascending=False)
+
+print("Top 10 highest VIF scores:")
+print(vif_data.head(10))
+```
+
+## Creating Composite Indices
+
+To address multicollinearity, we created composite indices for related policies:
+
+```{python}
+#| label: composite-indices
+#| warning: false
+
+def create_composite_indices(df):
+    df = df.copy()
+    
+    # Define indices
+    indices = {
+        'access_control_index': [
+            'background_check_or_purchase_permit',
+            'dealer_lisence_required'
+        ],
+        'domestic_violence_index': [
+            'prohibition_for_domestic_abusers',
+            'prohibition_for_convicted_domestic_abusers'
+        ],
+        'location_index': [
+            'no_guns_in_k_through_twelve_schools',
+            'no_guns_at_demonstrations',
+            'no_guns_on_college_campuses'
+        ]
+    }
+    
+    # Create indices
+    for name, columns in indices.items():
+        df[name] = df[columns].fillna(0).mean(axis=1)
+    
+    return df
+
+# Create indices and show distributions
+df_with_indices = create_composite_indices(merged_data)
+index_cols = ['access_control_index', 'domestic_violence_index', 'location_index']
+print("\nComposite Index Summary Statistics:")
+print(df_with_indices[index_cols].describe())
+
+```
+
+## Final Model with Reduced Multicollinearity
+
+After creating composite indices, we run our final model:
+
+```{python}
+#| label: final-model
+#| warning: false
+
+def prepare_final_model(df):
+    # Variables to keep
+    keep_vars = [
+        'access_control_index',
+        'domestic_violence_index',
+        'location_index',
+        'age_requirement',
+        'mentaI_illness_prohibitor',
+        'hate_crime_prohibitor',
+        'restraining_order_prohibitor',
+        'rejected_shoot_first_laws',
+        'concealed_carry_permit_required',
+        'firearm_mortality_above_median'
+    ]
+    
+    final_df = df[keep_vars].copy()
+    
+    # Standardize predictors
+    from sklearn.preprocessing import StandardScaler
+    predictors = [col for col in keep_vars if col != 'firearm_mortality_above_median']
+    final_df[predictors] = StandardScaler().fit_transform(final_df[predictors])
+    
+    return final_df
+
+# Prepare and run final model
+final_df = prepare_final_model(df_with_indices)
+y = final_df['firearm_mortality_above_median']
+X = sm.add_constant(final_df.drop('firearm_mortality_above_median', axis=1))
+
+model = sm.Logit(y, X).fit()
+print(model.summary())
+
+# Calculate and display odds ratios
+odds_ratios = pd.DataFrame({
+    'Odds Ratio': np.exp(model.params),
+    'Lower CI': np.exp(model.conf_int()[0]),
+    'Upper CI': np.exp(model.conf_int()[1])
+})
+print("\nOdds Ratios:")
+print(odds_ratios)
+```
+
+## Key Findings
+
+### Most Effective Policies
+1. Access Control Index (OR = 0.246)
+   - 75% lower odds of high mortality
+   - Includes background checks and dealer licensing
+
+2. Age Requirements (OR = 0.379)
+   - 62% lower odds of high mortality
+   - Nearly statistically significant (p = 0.067)
+
+3. Mental Illness Prohibitors (OR = 0.500)
+   - 50% lower odds of high mortality
+   - Important complementary policy
+
+### Unexpected Findings
+1. Location-based restrictions (OR = 2.701)
+   - Positive association with mortality
+   - May indicate reactive policy implementation
+
+2. Concealed carry requirements (OR = 1.746)
+   - Also showed positive association
+   - Similar reactive pattern suggested
+
+## Policy Implications
+
+1. Most Promising Approaches:
+   - Access controls (background checks, dealer licensing)
+   - Age restrictions
+   - Mental illness restrictions
+
+2. Implementation Considerations:
+   - Combined policy approaches may be more effective
+   - Need to account for reactive policy-making
+   - Enforcement quality likely crucial
+
+## Statistical Notes
+
+- Model Fit: Pseudo R-squared = 0.4755
+- Overall Significance: p = 0.0001046
+- Reduced Multicollinearity: All VIF values < 5 (except one)
+- Improved Model Stability: No infinite coefficient estimates
+
+```{r}
+
+# After each major analysis, add a visualization
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# For multicollinearity
+plt.figure(figsize=(10, 6))
+sns.barplot(data=vif_data.head(10), x='VIF', y='Variable')
+plt.title('Top 10 VIF Scores')
+plt.tight_layout()
+plt.show()
+
+# For final model
+plt.figure(figsize=(10, 6))
+coef_plot = odds_ratios.sort_values('Odds Ratio').plot(kind='barh')
+plt.title('Odds Ratios for Gun Policies')
+plt.tight_layout()
+plt.show()
+
+```
