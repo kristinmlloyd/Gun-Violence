@@ -29,14 +29,19 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_curve, auc
 
-# Load dataset
-merged_data = pd.read_csv("data/merged_data.csv")
+```
 
-# Define binary predictors
+```{python}
+
+df = pd.read_csv("data/merged_data.csv")
+
 binary_predictors = [
     "prohibition_for_stalkers", "abusers_turn_in_gun_after_conviction", 
-    "prohibition_for_domestic_abusers", "prohibition_for_convicted_domestic_abusers", 
+    "prohibition_for_domestic_abusers", "prohibition_for_convicted_domestic_abusers",
     "waiting_period", "mental_health_in_background_check",
     "funding_for_violence_intervention", "no_purchase_after_violent_offense", 
     "age_requirement", "mentaI_illness_prohibitor", "hate_crime_prohibitor", 
@@ -51,13 +56,96 @@ binary_predictors = [
     "extreme_risk_law"
 ]
 
-# Create binary outcome variable
-merged_data["firearm_mortality_above_median"] = (
-    merged_data["firearm_mortality_by_state_2022"] > 
-    merged_data["firearm_mortality_by_state_2022"].median()
+df["firearm_mortality_above_median"] = (
+    df["firearm_mortality_by_state_2022"] > 
+    df["firearm_mortality_by_state_2022"].median()
 ).astype(int)
 
 ```
+
+```{python}
+
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+def calculate_vif(df, features):
+    X = df[features].dropna()  
+    vif_data = pd.DataFrame()
+    vif_data["Feature"] = features
+    vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+    return vif_data.sort_values("VIF", ascending=False)
+
+vif_results = calculate_vif(df, binary_predictors)
+vif_results
+
+```
+
+```{python}
+
+import statsmodels.api as sm
+
+def univariate_logistic_regression(df, features, target):
+    results = []
+    for feature in features:
+        X = sm.add_constant(df[[feature]].dropna())  # Add intercept
+        y = df[target][X.index]  # Ensure matching index
+        model = sm.Logit(y, X).fit(disp=0)
+        results.append({
+            "Feature": feature,
+            "Odds Ratio": np.exp(model.params[feature]),  # Convert log-odds to odds ratio
+            "P-value": model.pvalues[feature]
+        })
+    
+    results_df = pd.DataFrame(results).sort_values("P-value")
+    return results_df
+
+univariate_results = univariate_logistic_regression(df, binary_predictors, "firearm_mortality_above_median")
+print(univariate_results)
+
+```
+
+Significant Predictors (P-value < 0.05)
+
+These variables showed a strong statistical relationship with firearm mortality and should be considered for inclusion in the composite indices:
+
+Secure storage child access laws (p = 0.000090)
+Background check or purchase permit (p = 0.000105)
+Age requirement (p = 0.000105)
+Rejected shoot-first laws (p = 0.000234)
+Red flag laws (p = 0.000793)
+Prohibition for domestic abusers (p = 0.000923)
+Extreme risk law (p = 0.001055)
+Concealed carry permit required (p = 0.001055)
+Prohibition for stalkers (p = 0.003849)
+Prohibition for convicted domestic abusers (p = 0.004028)
+High capacity magazines prohibited (p = 0.004164)
+Fugitive from justice prohibitor (p = 0.005087)
+Bar concealed carry by people with violent misdemeanors (p = 0.005607)
+Hate crime prohibitor (p = 0.006017)
+Mental illness prohibitor (p = 0.006326)
+Dealer license required (p = 0.007793)
+No open carry (p = 0.009936)
+Waiting period (p = 0.012776)
+Abusers turn in gun after conviction (p = 0.013590)
+No purchase after violent offense (p = 0.014365)
+Restraining order prohibitor (p = 0.045278)
+
+
+Moderately Significant Predictors (0.05 ≤ P-value < 0.1)
+These variables may have some impact but are not as strong as the ones above:
+
+Funding for violence intervention (p = 0.063884)
+
+
+Non-Significant Predictors (P-value > 0.1)
+These variables showed little to no statistical relationship with firearm mortality and can likely be excluded from composite indices:
+
+No guns on college campuses (p = 0.145490)
+No guns in K-12 schools (p = 0.274404)
+No guns at demonstrations (p = 0.402843)
+Felony prohibitor (p = 0.873639)
+Mental health in background check (p = 0.916768)
+Gun removal program (p = 0.995073)
+Assault weapons prohibited (p = 1.000000)
 
 ## Addressing Multicollinearity in Gun Policy Analysis
 
@@ -120,21 +208,23 @@ This approach allows us to move beyond examining individual policy variables and
 
 ```{python}
 
-# Create composite indices
 def create_composite_indices(df):
     indices = {
         'access_control_index': [
             'background_check_or_purchase_permit',
-            'dealer_lisence_required'
+            'dealer_lisence_required',
+            'secure_storage_child_access_laws',
+            'age_requirement'
         ],
         'domestic_violence_index': [
             'prohibition_for_domestic_abusers',
-            'prohibition_for_convicted_domestic_abusers'
+            'prohibition_for_convicted_domestic_abusers',
+            'restraining_order_prohibitor'
         ],
-        'location_index': [
-            'no_guns_in_k_through_twelve_schools',
-            'no_guns_at_demonstrations',
-            'no_guns_on_college_campuses'
+        'gun_carry_restrictions_index': [
+            'no_open_carry',
+            'bar_concealed_carry_by_people_with_violent_misdemeanors',
+            'high_capacity_magazines_prohibited'
         ]
     }
     
@@ -144,146 +234,390 @@ def create_composite_indices(df):
     
     return df_copy
 
-# Prepare final dataset
-df_with_indices = create_composite_indices(merged_data)
+df_with_indices = create_composite_indices(df)
 
 ```
 
 ```{python}
 
-from sklearn.impute import SimpleImputer
+def calculate_vif(df, features):
+    X = df[features].dropna()  
+    vif_data = pd.DataFrame()
+    vif_data["Feature"] = features
+    vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+    return vif_data.sort_values("VIF", ascending=False)
 
-def prepare_data_for_lasso(df):
+policy_features_with_indices = [
+    'access_control_index',
+    'domestic_violence_index',
+    'gun_carry_restrictions_index',  # Updated from location_index
+    'rejected_shoot_first_laws',
+    'concealed_carry_permit_required'
+]
+
+vif_results_after_indices = calculate_vif(df_with_indices, policy_features_with_indices)
+vif_results_after_indices
+
+```
+
+```{python}
+
+access_control_features = [
+    "background_check_or_purchase_permit",
+    "dealer_lisence_required",
+    "secure_storage_child_access_laws",
+    "age_requirement"
+]
+
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+def check_vif_for_index(df, features):
+    X = df[features].dropna()
+    vif_data = pd.DataFrame()
+    vif_data["Feature"] = features
+    vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+    return vif_data.sort_values("VIF", ascending=False)
+
+vif_access_control = check_vif_for_index(df, access_control_features)
+print(vif_access_control)
+
+```
+
+
+
+```{python}
+
+def prepare_data_for_logistic_regression(df):
     features = [
-        'access_control_index',
-        'domestic_violence_index',
-        'location_index',
-        'age_requirement',
-        'mentaI_illness_prohibitor',
-        'hate_crime_prohibitor',
-        'restraining_order_prohibitor',
-        'rejected_shoot_first_laws',
-        'concealed_carry_permit_required'
+    'access_control_index',
+    'domestic_violence_index',
+    'gun_carry_restrictions_index',  # Updated from location_index
+    'rejected_shoot_first_laws',
+    'concealed_carry_permit_required'
     ]
     
-    # Remove rows with NaN values
-    df_clean = df.dropna(subset=features + ['firearm_mortality_above_median'])
+    df_clean = df[features + ['firearm_mortality_above_median']].copy()
     
-    # Separate features and target
-    X = df_clean[features]
+    imputer = SimpleImputer(strategy="mean")
+    X_imputed = imputer.fit_transform(df_clean[features])
+    
     y = df_clean['firearm_mortality_above_median']
     
-    # Print data shape after cleaning
     print(f"Original data shape: {df.shape}")
-    print(f"Cleaned data shape: {df_clean.shape}")
+    print(f"Cleaned data shape: ({len(y)}, {len(features)})")  
     
-    # Standardize features
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    X_scaled = scaler.fit_transform(X_imputed)
     
     return X_scaled, y, features
 
-# Prepare and analyze data
-X_scaled, y, features = prepare_data_for_lasso(df_with_indices)
-feature_importance = lasso_feature_importance(X_scaled, y, features)
+```
+
+```{python}
+
+X_scaled, y, features = prepare_data_for_logistic_regression(df_with_indices)
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_score
+import numpy as np
+import pandas as pd
+
+models = {
+    "Standard Logistic Regression": LogisticRegression(penalty=None, solver="lbfgs", max_iter=1000),
+    "Lasso (L1) Logistic Regression": LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000),
+    "Ridge (L2) Logistic Regression": LogisticRegression(penalty="l2", solver="liblinear", max_iter=1000),
+    "Elastic Net Logistic Regression": LogisticRegression(penalty="elasticnet", solver="saga", l1_ratio=0.5, max_iter=1000)
+}
+
+cv_results = {}
+for name, model in models.items():
+    scores = cross_val_score(model, X_scaled, y, cv=5, scoring="accuracy") 
+    cv_results[name] = {
+        "Mean Accuracy": np.mean(scores),
+        "Std Dev": np.std(scores)
+    }
+
+cv_results_df = pd.DataFrame(cv_results).T
+cv_results_df.sort_values("Mean Accuracy", ascending=False, inplace=True)
+
+print("Logistic Regression Model Comparison:")
+print(cv_results_df.to_markdown()) 
+
+```
+
+```{python}
+
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42, stratify=y)
+
+# Change model to Lasso (L1) Logistic Regression
+lasso_model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000, C=0.1)
+lasso_model.fit(X_train, y_train)
+
+y_pred = lasso_model.predict(X_test)
+y_prob = lasso_model.predict_proba(X_test)[:, 1]  
+
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+fpr, tpr, _ = roc_curve(y_test, y_prob)
+roc_auc = auc(fpr, tpr)
+
+print(f"Lasso Model Performance:")
+print(f"Accuracy: {accuracy:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"Recall: {recall:.4f}")
+print(f"F1 Score: {f1:.4f}")
+print(f"ROC AUC: {roc_auc:.4f}")
+
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, color="darkorange", lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color="navy", linestyle="--")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Lasso Logistic Regression - ROC Curve")
+plt.legend(loc="lower right")
+plt.show()
 
 ```
 
 ```{python}
 
 def lasso_feature_importance(X, y, features):
-    # Lasso Logistic Regression
-    model = LogisticRegression(penalty='l1', solver='liblinear', max_iter=1000)
+    # Train Lasso Logistic Regression
+    model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000)
     model.fit(X, y)
-    
+
+    # Create a DataFrame with feature importance
     feature_importance = pd.DataFrame({
         'Feature': features,
-        'Coefficient': np.abs(model.coef_[0]),
-        'Sign': np.sign(model.coef_[0])
-    }).sort_values('Coefficient', ascending=False)
-    
-    print("\nFeature Importance:")
+        'Coefficient': model.coef_[0],  
+        'Abs_Coefficient': np.abs(model.coef_[0]),
+        'Sign': np.sign(model.coef_[0]) 
+    }).sort_values('Abs_Coefficient', ascending=False)
+
+    print("\nLasso Feature Importance:")
     print(feature_importance)
-    
-    # Visualization
+
+    # Plot feature importance
     plt.figure(figsize=(10, 6))
     plt.barh(
-        feature_importance['Feature'], 
-        feature_importance['Coefficient'],
-        color=[('green' if sign > 0 else 'red') for sign in feature_importance['Sign']]
+        feature_importance["Feature"], 
+        feature_importance["Abs_Coefficient"],
+        color=["green" if sign > 0 else "red" for sign in feature_importance["Sign"]]
     )
-    plt.title('Lasso Logistic Regression - Feature Importance')
-    plt.xlabel('Absolute Coefficient Magnitude')
+    plt.xlabel("Absolute Coefficient Magnitude", fontsize=12)
+    plt.ylabel("Feature", fontsize=12)
+    plt.title("Lasso Logistic Regression - Feature Importance", fontsize=14)
+    plt.gca().invert_yaxis()  
     plt.tight_layout()
     plt.show()
-    
+
     return feature_importance
 
-X_scaled, y, features = prepare_data_for_lasso(df_with_indices)
-feature_importance = lasso_feature_importance(X_scaled, y, features)
+lasso_feature_importance(X_scaled, y, features)
 
 ```
+
+```{python}
+def lasso_feature_importance(X, y, features):
+    # Train Lasso Logistic Regression with C=0.1
+    model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000, C=0.1)
+    model.fit(X, y)
+
+    # Create a DataFrame with feature importance
+    feature_importance = pd.DataFrame({
+        'Feature': features,
+        'Coefficient': model.coef_[0],  
+        'Abs_Coefficient': np.abs(model.coef_[0]),
+        'Sign': np.sign(model.coef_[0]) 
+    }).sort_values('Abs_Coefficient', ascending=False)
+
+    print("\nLasso Feature Importance (C=0.1):")
+    print(feature_importance)
+
+    # Plot feature importance
+    plt.figure(figsize=(10, 6))
+    plt.barh(
+        feature_importance["Feature"], 
+        feature_importance["Abs_Coefficient"],
+        color=["green" if sign > 0 else "red" for sign in feature_importance["Sign"]]
+    )
+    plt.xlabel("Absolute Coefficient Magnitude", fontsize=12)
+    plt.ylabel("Feature", fontsize=12)
+    plt.title("Lasso Logistic Regression (C=0.1) - Feature Importance", fontsize=14)
+    plt.gca().invert_yaxis()  
+    plt.tight_layout()
+    plt.show()
+
+    return feature_importance
+
+# Run feature importance analysis with C=0.1
+lasso_feature_importance(X_scaled, y, features)
+
+```
+
+tells us that access control index is the best predictor and has the biggest impact
+
+```{python}
+
+
+# Define the 4 access laws individually
+access_control_features = [
+    "background_check_or_purchase_permit",
+    "dealer_lisence_required",
+    "secure_storage_child_access_laws",
+    "age_requirement"
+]
+
+# Extract X and y
+X_access_laws = df_with_indices[access_control_features]
+y = df_with_indices["firearm_mortality_above_median"]
+
+# Handle missing values
+imputer = SimpleImputer(strategy="mean")
+X_imputed = imputer.fit_transform(X_access_laws)
+
+# Standardize features
+scaler = StandardScaler()
+X_scaled_access_laws = scaler.fit_transform(X_imputed)
+
+# Train Lasso model with just access laws
+lasso_model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000, C=0.1)
+lasso_model.fit(X_scaled_access_laws, y)
+
+# Feature Importance
+feature_importance = pd.DataFrame({
+    'Feature': access_control_features,
+    'Coefficient': lasso_model.coef_[0],  
+    'Abs_Coefficient': np.abs(lasso_model.coef_[0]),
+    'Sign': np.sign(lasso_model.coef_[0]) 
+}).sort_values('Abs_Coefficient', ascending=False)
+
+print("\nLasso Feature Importance for Access Laws Only (C=0.1):")
+print(feature_importance)
+
+# Plot feature importance
+plt.figure(figsize=(10, 6))
+plt.barh(
+    feature_importance["Feature"], 
+    feature_importance["Abs_Coefficient"],
+    color=["green" if sign > 0 else "red" for sign in feature_importance["Sign"]]
+)
+plt.xlabel("Absolute Coefficient Magnitude", fontsize=12)
+plt.ylabel("Feature", fontsize=12)
+plt.title("Lasso Feature Importance for Access Laws Only (C=0.1)", fontsize=14)
+plt.gca().invert_yaxis()  
+plt.tight_layout()
+plt.show()
+
+
+```
+
+Your Lasso model on just the 4 access laws shows:
+
+✅ age_requirement (-0.24) and secure_storage_child_access_laws (-0.21) are the most important
+✅ background_check_or_purchase_permit (-0.10) still matters but less
+❌ dealer_license_required got eliminated (0.00) → It doesn’t contribute to the model
 
 ## Conclusions
 
 ### Key Findings
 
-Most robust model: Ridge Regularization
-Average accuracy: Approximately 76%
-ROC AUC: Around 0.82
 
-1. **Age Restrictions Are Critical**
-   - Age requirements emerged as the most influential policy factor
-   - Stricter age-based regulations are strongly associated with reduced firearm mortality
-   - Suggests potential for targeted interventions focusing on age-related access
+```{python}
 
-2. **Comprehensive Policy Approach**
-   - No single policy provides a complete solution
-   - Multifaceted policy strategies demonstrate greater potential for reducing firearm mortality
-   - Importance of integrated, layered policy design
+# Define the 3 most important access control policies
+best_access_laws = [
+    "age_requirement",
+    "secure_storage_child_access_laws",
+    "background_check_or_purchase_permit"
+]
 
-3. **Vulnerable Population Protections**
-   - Policies addressing domestic violence and hate crime contexts show significant protective effects
-   - Mental health-related firearm restrictions demonstrate meaningful impact
-   - Highlights the importance of tailored protective measures
+# Extract X and y
+X_best_access_laws = df_with_indices[best_access_laws]
+y = df_with_indices["firearm_mortality_above_median"]
 
-### Policy Implications
+# Handle missing values
+imputer = SimpleImputer(strategy="mean")
+X_imputed = imputer.fit_transform(X_best_access_laws)
 
-- **Targeted Policy Development**
-  - Prioritize evidence-based age restrictions
-  - Develop nuanced policies addressing specific vulnerable populations
-  - Focus on comprehensive access control mechanisms
+# Standardize features
+scaler = StandardScaler()
+X_scaled_best_access_laws = scaler.fit_transform(X_imputed)
 
-- **Holistic Approach**
-  - Move beyond single-factor policy interventions
-  - Consider intersectional policy design
-  - Recognize complex interactions between different policy approaches
+# Train Logistic Regression Model (without Lasso)
+logreg_model = LogisticRegression(penalty=None, solver="lbfgs", max_iter=1000)
+logreg_model.fit(X_scaled_best_access_laws, y)
 
-### Methodological Contributions
+# Make predictions
+y_pred = logreg_model.predict(X_scaled_best_access_laws)
+y_prob = logreg_model.predict_proba(X_scaled_best_access_laws)[:, 1]
 
-- Demonstrated advanced statistical techniques for policy analysis
-- Utilized regularization methods to handle complex, correlated policy data
-- Provided robust approach to understanding policy effectiveness
+# Evaluate model
+accuracy = accuracy_score(y, y_pred)
+precision = precision_score(y, y_pred)
+recall = recall_score(y, y_pred)
+f1 = f1_score(y, y_pred)
+roc_auc = auc(*roc_curve(y, y_prob)[:2])
 
-### Limitations
+# Print results
+print(f"Logistic Regression Performance (Only 3 Access Laws):")
+print(f"Accuracy: {accuracy:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"Recall: {recall:.4f}")
+print(f"F1 Score: {f1:.4f}")
+print(f"ROC AUC: {roc_auc:.4f}")
 
-- Small sample size (50 states after cleaning)
-- Cross-sectional nature of the analysis
-- Potential unmeasured confounding factors
+# Plot ROC Curve
+plt.figure(figsize=(8, 6))
+plt.plot(*roc_curve(y, y_prob)[:2], color="darkorange", lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color="navy", linestyle="--")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Logistic Regression - ROC Curve (Only 3 Access Laws)")
+plt.legend(loc="lower right")
+plt.show()
 
-### Future Research Directions
+```
 
-1. Expand dataset with more granular policy implementation details
-2. Develop longitudinal studies tracking policy impacts over time
-3. Investigate interaction effects between different policy approaches
-4. Explore state-level variations in policy implementation and effectiveness
+✅ Accuracy: 80.4% → Higher than the Lasso model with the full index (73%)
+✅ Precision: 77.8% → Fewer false positives, meaning it predicts high-risk states more accurately
+✅ Recall: 84.0% → Still capturing most high-mortality states
+✅ F1 Score: 80.8% → A strong balance of precision & recall
+✅ ROC AUC: 88.1% → Best so far! Strong discrimination ability
 
-### Ethical Considerations
+🚀 What This Means
+These 3 policies alone explain firearm mortality risk very well—there's no need for an index!
+Using the full index actually lowered accuracy—suggesting the extra policies added noise.
+This is now the strongest, most interpretable model!
 
-- Emphasize evidence-based policy development
-- Balance public safety with individual rights
-- Recognize the complex social dynamics surrounding gun policy
+```{python}
 
-## Final Reflection
+# Re-import necessary libraries since execution state was reset
+# Compute VIF for the selected 3 access laws without using ace tools
+import pandas as pd
+import numpy as np
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-This analysis provides a nuanced, data-driven perspective on gun policy effectiveness. By employing advanced statistical techniques, we illuminate the complex landscape of firearm mortality prevention, offering insights that can guide more effective, evidence-based policy interventions.
+# Define the selected 3 access control policies
+best_access_laws = [
+    "age_requirement",
+    "secure_storage_child_access_laws",
+    "background_check_or_purchase_permit"
+]
+
+# Extract data for VIF calculation
+X_vif = df_with_indices[best_access_laws].dropna()
+
+# Compute VIF for each feature
+vif_data = pd.DataFrame()
+vif_data["Feature"] = best_access_laws
+vif_data["VIF"] = [variance_inflation_factor(X_vif.values, i) for i in range(X_vif.shape[1])]
+
+# Display results
+vif_data
+
+
+```
