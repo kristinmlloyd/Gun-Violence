@@ -6,19 +6,13 @@ format:
 jupyter: python3
 ---
 
-## Introduction
+Introduction
 
-This study examines the relationship between state-level gun policies and firearm mortality rates. Using data from all 50 states plus DC, we investigate how various gun policies relate to whether a state has above-median firearm mortality.
+In this analysis, we investigate the impact of various gun policies on firearm mortality rates across different states. Our main goal is to explore how different gun control measures (such as background checks, waiting periods, and concealed carry laws) affect the likelihood of high firearm mortality.
 
-## Research Objectives
+Data Preparation
 
-1. Identify gun policies most strongly associated with reduced firearm mortality
-2. Address statistical challenges in policy analysis
-3. Develop a robust predictive model for firearm mortality risk
-
-## Methodology
-
-### Data Preparation
+We start by loading the dataset and preparing the binary predictors, which represent different gun control policies. The target variable will be whether the firearm mortality rate in each state is above or below the median value.
 
 ```{python}
 
@@ -32,13 +26,17 @@ import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_curve, auc
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+import statsmodels.api as sm
 
 ```
 
 ```{python}
 
+# Load the dataset
 df = pd.read_csv("data/merged_data.csv")
 
+# Define binary predictors (indicators of gun control measures)
 binary_predictors = [
     "prohibition_for_stalkers", "abusers_turn_in_gun_after_conviction", 
     "prohibition_for_domestic_abusers", "prohibition_for_convicted_domestic_abusers",
@@ -56,6 +54,7 @@ binary_predictors = [
     "extreme_risk_law"
 ]
 
+# Create a new binary variable representing whether the state's firearm mortality rate is above or below the median
 df["firearm_mortality_above_median"] = (
     df["firearm_mortality_by_state_2022"] > 
     df["firearm_mortality_by_state_2022"].median()
@@ -63,9 +62,11 @@ df["firearm_mortality_above_median"] = (
 
 ```
 
-```{python}
+Variance Inflation Factor (VIF)
 
-from statsmodels.stats.outliers_influence import variance_inflation_factor
+We calculate the Variance Inflation Factor (VIF) to detect multicollinearity among our predictors. High multicollinearity can lead to unreliable coefficient estimates, which is problematic for regression analysis.
+
+```{python}
 
 def calculate_vif(df, features):
     X = df[features].dropna()  
@@ -74,14 +75,17 @@ def calculate_vif(df, features):
     vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
     return vif_data.sort_values("VIF", ascending=False)
 
+# Calculate the VIF for the binary predictors
 vif_results = calculate_vif(df, binary_predictors)
 vif_results
 
 ```
 
-```{python}
+Univariate Logistic Regression
 
-import statsmodels.api as sm
+We perform univariate logistic regression to assess the relationship between each binary predictor and the target variable (firearm_mortality_above_median). The goal is to evaluate the impact of each feature individually.
+
+```{python}
 
 def univariate_logistic_regression(df, features, target):
     results = []
@@ -98,113 +102,15 @@ def univariate_logistic_regression(df, features, target):
     results_df = pd.DataFrame(results).sort_values("P-value")
     return results_df
 
+# Perform univariate logistic regression on the binary predictors
 univariate_results = univariate_logistic_regression(df, binary_predictors, "firearm_mortality_above_median")
 print(univariate_results)
 
 ```
 
-Significant Predictors (P-value < 0.05)
+Composite Indices
 
-These variables showed a strong statistical relationship with firearm mortality and should be considered for inclusion in the composite indices:
-
-Secure storage child access laws (p = 0.000090)
-Background check or purchase permit (p = 0.000105)
-Age requirement (p = 0.000105)
-Rejected shoot-first laws (p = 0.000234)
-Red flag laws (p = 0.000793)
-Prohibition for domestic abusers (p = 0.000923)
-Extreme risk law (p = 0.001055)
-Concealed carry permit required (p = 0.001055)
-Prohibition for stalkers (p = 0.003849)
-Prohibition for convicted domestic abusers (p = 0.004028)
-High capacity magazines prohibited (p = 0.004164)
-Fugitive from justice prohibitor (p = 0.005087)
-Bar concealed carry by people with violent misdemeanors (p = 0.005607)
-Hate crime prohibitor (p = 0.006017)
-Mental illness prohibitor (p = 0.006326)
-Dealer license required (p = 0.007793)
-No open carry (p = 0.009936)
-Waiting period (p = 0.012776)
-Abusers turn in gun after conviction (p = 0.013590)
-No purchase after violent offense (p = 0.014365)
-Restraining order prohibitor (p = 0.045278)
-
-
-Moderately Significant Predictors (0.05 ≤ P-value < 0.1)
-These variables may have some impact but are not as strong as the ones above:
-
-Funding for violence intervention (p = 0.063884)
-
-
-Non-Significant Predictors (P-value > 0.1)
-These variables showed little to no statistical relationship with firearm mortality and can likely be excluded from composite indices:
-
-No guns on college campuses (p = 0.145490)
-No guns in K-12 schools (p = 0.274404)
-No guns at demonstrations (p = 0.402843)
-Felony prohibitor (p = 0.873639)
-Mental health in background check (p = 0.916768)
-Gun removal program (p = 0.995073)
-Assault weapons prohibited (p = 1.000000)
-
-## Addressing Multicollinearity in Gun Policy Analysis
-
-### The Challenge of Correlated Policy Variables
-
-In our initial analysis, we encountered a significant statistical challenge known as multicollinearity. **Multicollinearity** occurs when predictor variables in a model are highly correlated with each other, which can lead to several statistical complications:
-
-1. **Unstable Coefficient Estimates**
-   - Highly correlated predictors make it difficult to determine the individual impact of each policy
-   - Small changes in the data can cause large, unpredictable changes in coefficient values
-
-2. **Inflated Standard Errors**
-   - Correlated predictors increase the uncertainty of statistical estimates
-   - Challenges the identification of statistically significant policy effects
-
-### Variance Inflation Factor (VIF) Analysis
-
-Our initial Variance Inflation Factor (VIF) analysis revealed severe multicollinearity among gun policy variables:
-
-- Multiple policy variables showed VIF scores well above the conventional threshold of 5
-- Certain policy areas, such as red flag laws and extreme risk laws, were essentially measuring the same underlying constructs
-
-### Composite Index Strategy
-
-To address these statistical challenges, we developed a **composite index approach**:
-
-- **Grouping Related Policies**: Combine related policy variables into comprehensive indices
-- **Dimensionality Reduction**: Reduce the number of predictors while preserving core policy information
-- **Multicollinearity Mitigation**: Minimize statistical noise and correlation between variables
-- **Enhanced Interpretability**: Provide a more robust and meaningful analysis
-
-#### Developed Composite Indices
-
-1. **Access Control Index**
-   - *Combines*: Background check and dealer licensing policies
-   - *Purpose*: Capture comprehensive firearms access control measures
-
-2. **Domestic Violence Index**
-   - *Combines*: Policies restricting firearm access for domestic abusers
-   - *Purpose*: Assess holistic approach to protecting vulnerable populations
-
-3. **Location Index**
-   - *Combines*: Policies restricting guns in schools, demonstrations, and campuses
-   - *Purpose*: Evaluate location-specific firearm restriction strategies
-
-### Methodological Benefits
-
-By creating these composite indices, we achieved several analytical improvements:
-
-- Simplified statistical model
-- Reduced noise from highly correlated variables
-- Provided a more nuanced view of policy impacts
-- Improved stability and interpretability of statistical analysis
-
-### Theoretical Implications
-
-This approach allows us to move beyond examining individual policy variables and instead understand broader policy strategies and their relationship to firearm mortality.
-
-**Key Insight**: Complex social problems require comprehensive, integrated policy approaches that cannot be fully captured by isolated, single-factor interventions.
+Next, we combine related variables into composite indices. These indices represent overall policy categories, such as access control, domestic violence, and gun carry restrictions.
 
 ```{python}
 
@@ -214,17 +120,28 @@ def create_composite_indices(df):
             'background_check_or_purchase_permit',
             'dealer_lisence_required',
             'secure_storage_child_access_laws',
-            'age_requirement'
+            'age_requirement',
+            'fugitive_from_justice_prohibitor',
+            'mentaI_illness_prohibitor',
+            'waiting_period'
         ],
         'domestic_violence_index': [
             'prohibition_for_domestic_abusers',
             'prohibition_for_convicted_domestic_abusers',
-            'restraining_order_prohibitor'
+            'restraining_order_prohibitor',
+            'prohibition_for_stalkers',
+            'bar_concealed_carry_by_people_with_violent_misdemeanors',
+            'abusers_turn_in_gun_after_conviction',
+            'no_purchase_after_violent_offense',
+            'rejected_shoot_first_laws',
+            'red_flag_laws',
+            'extreme_risk_law',
+            'hate_crime_prohibitor'
         ],
         'gun_carry_restrictions_index': [
             'no_open_carry',
-            'bar_concealed_carry_by_people_with_violent_misdemeanors',
-            'high_capacity_magazines_prohibited'
+            'high_capacity_magazines_prohibited',
+            'concealed_carry_permit_required'
         ]
     }
     
@@ -234,25 +151,21 @@ def create_composite_indices(df):
     
     return df_copy
 
+# Create composite indices for the dataset
 df_with_indices = create_composite_indices(df)
 
 ```
 
-```{python}
+VIF After Composite Indices
 
-def calculate_vif(df, features):
-    X = df[features].dropna()  
-    vif_data = pd.DataFrame()
-    vif_data["Feature"] = features
-    vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-    return vif_data.sort_values("VIF", ascending=False)
+We recalculate the VIF for the composite indices to check for multicollinearity after creating the indices.
+
+```{python}
 
 policy_features_with_indices = [
     'access_control_index',
     'domestic_violence_index',
-    'gun_carry_restrictions_index',  # Updated from location_index
-    'rejected_shoot_first_laws',
-    'concealed_carry_permit_required'
+    'gun_carry_restrictions_index', 
 ]
 
 vif_results_after_indices = calculate_vif(df_with_indices, policy_features_with_indices)
@@ -260,30 +173,9 @@ vif_results_after_indices
 
 ```
 
-```{python}
+Preparing Data for Logistic Regression
 
-access_control_features = [
-    "background_check_or_purchase_permit",
-    "dealer_lisence_required",
-    "secure_storage_child_access_laws",
-    "age_requirement"
-]
-
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-def check_vif_for_index(df, features):
-    X = df[features].dropna()
-    vif_data = pd.DataFrame()
-    vif_data["Feature"] = features
-    vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-    return vif_data.sort_values("VIF", ascending=False)
-
-vif_access_control = check_vif_for_index(df, access_control_features)
-print(vif_access_control)
-
-```
-
-
+Now we prepare the data for logistic regression. This step involves handling missing values, scaling the features, and splitting the data into training and testing sets.
 
 ```{python}
 
@@ -291,13 +183,12 @@ def prepare_data_for_logistic_regression(df):
     features = [
     'access_control_index',
     'domestic_violence_index',
-    'gun_carry_restrictions_index',  # Updated from location_index
-    'rejected_shoot_first_laws',
-    'concealed_carry_permit_required'
+    'gun_carry_restrictions_index'
     ]
     
     df_clean = df[features + ['firearm_mortality_above_median']].copy()
     
+    # Handle missing values using mean imputation
     imputer = SimpleImputer(strategy="mean")
     X_imputed = imputer.fit_transform(df_clean[features])
     
@@ -306,12 +197,17 @@ def prepare_data_for_logistic_regression(df):
     print(f"Original data shape: {df.shape}")
     print(f"Cleaned data shape: ({len(y)}, {len(features)})")  
     
+    # Scale the features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X_imputed)
     
     return X_scaled, y, features
 
 ```
+
+Logistic Regression Model Comparison
+
+We compare multiple logistic regression models to determine which one works best. Models include Standard Logistic Regression, Lasso (L1) Logistic Regression, Ridge (L2) Logistic Regression, and Elastic Net Logistic Regression.
 
 ```{python}
 
@@ -345,14 +241,19 @@ print(cv_results_df.to_markdown())
 
 ```
 
+Model Evaluation: Lasso Logistic Regression
+
+Finally, we evaluate the performance of the Lasso Logistic Regression model using metrics such as accuracy, precision, recall, F1 score, and ROC AUC.
+
 ```{python}
 
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42, stratify=y)
 
-# Change model to Lasso (L1) Logistic Regression
-lasso_model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000, C=0.1)
+# Train Lasso (L1) Logistic Regression model
+lasso_model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000)
 lasso_model.fit(X_train, y_train)
 
+# Predict on the test set
 y_pred = lasso_model.predict(X_test)
 y_prob = lasso_model.predict_proba(X_test)[:, 1]  
 
@@ -382,14 +283,16 @@ plt.show()
 
 ```
 
+Lasso Feature Importance
+
+We visualize the feature importance for the Lasso model, which gives insights into which policies are most influential in predicting firearm mortality.
+
 ```{python}
 
 def lasso_feature_importance(X, y, features):
-    # Train Lasso Logistic Regression
     model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000)
     model.fit(X, y)
 
-    # Create a DataFrame with feature importance
     feature_importance = pd.DataFrame({
         'Feature': features,
         'Coefficient': model.coef_[0],  
@@ -420,204 +323,7 @@ lasso_feature_importance(X_scaled, y, features)
 
 ```
 
-```{python}
-def lasso_feature_importance(X, y, features):
-    # Train Lasso Logistic Regression with C=0.1
-    model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000, C=0.1)
-    model.fit(X, y)
+#### part 2
 
-    # Create a DataFrame with feature importance
-    feature_importance = pd.DataFrame({
-        'Feature': features,
-        'Coefficient': model.coef_[0],  
-        'Abs_Coefficient': np.abs(model.coef_[0]),
-        'Sign': np.sign(model.coef_[0]) 
-    }).sort_values('Abs_Coefficient', ascending=False)
+work on improving the model now
 
-    print("\nLasso Feature Importance (C=0.1):")
-    print(feature_importance)
-
-    # Plot feature importance
-    plt.figure(figsize=(10, 6))
-    plt.barh(
-        feature_importance["Feature"], 
-        feature_importance["Abs_Coefficient"],
-        color=["green" if sign > 0 else "red" for sign in feature_importance["Sign"]]
-    )
-    plt.xlabel("Absolute Coefficient Magnitude", fontsize=12)
-    plt.ylabel("Feature", fontsize=12)
-    plt.title("Lasso Logistic Regression (C=0.1) - Feature Importance", fontsize=14)
-    plt.gca().invert_yaxis()  
-    plt.tight_layout()
-    plt.show()
-
-    return feature_importance
-
-# Run feature importance analysis with C=0.1
-lasso_feature_importance(X_scaled, y, features)
-
-```
-
-tells us that access control index is the best predictor and has the biggest impact
-
-```{python}
-
-
-# Define the 4 access laws individually
-access_control_features = [
-    "background_check_or_purchase_permit",
-    "dealer_lisence_required",
-    "secure_storage_child_access_laws",
-    "age_requirement"
-]
-
-# Extract X and y
-X_access_laws = df_with_indices[access_control_features]
-y = df_with_indices["firearm_mortality_above_median"]
-
-# Handle missing values
-imputer = SimpleImputer(strategy="mean")
-X_imputed = imputer.fit_transform(X_access_laws)
-
-# Standardize features
-scaler = StandardScaler()
-X_scaled_access_laws = scaler.fit_transform(X_imputed)
-
-# Train Lasso model with just access laws
-lasso_model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000, C=0.1)
-lasso_model.fit(X_scaled_access_laws, y)
-
-# Feature Importance
-feature_importance = pd.DataFrame({
-    'Feature': access_control_features,
-    'Coefficient': lasso_model.coef_[0],  
-    'Abs_Coefficient': np.abs(lasso_model.coef_[0]),
-    'Sign': np.sign(lasso_model.coef_[0]) 
-}).sort_values('Abs_Coefficient', ascending=False)
-
-print("\nLasso Feature Importance for Access Laws Only (C=0.1):")
-print(feature_importance)
-
-# Plot feature importance
-plt.figure(figsize=(10, 6))
-plt.barh(
-    feature_importance["Feature"], 
-    feature_importance["Abs_Coefficient"],
-    color=["green" if sign > 0 else "red" for sign in feature_importance["Sign"]]
-)
-plt.xlabel("Absolute Coefficient Magnitude", fontsize=12)
-plt.ylabel("Feature", fontsize=12)
-plt.title("Lasso Feature Importance for Access Laws Only (C=0.1)", fontsize=14)
-plt.gca().invert_yaxis()  
-plt.tight_layout()
-plt.show()
-
-
-```
-
-Your Lasso model on just the 4 access laws shows:
-
-✅ age_requirement (-0.24) and secure_storage_child_access_laws (-0.21) are the most important
-✅ background_check_or_purchase_permit (-0.10) still matters but less
-❌ dealer_license_required got eliminated (0.00) → It doesn’t contribute to the model
-
-## Conclusions
-
-### Key Findings
-
-
-```{python}
-
-# Define the 3 most important access control policies
-best_access_laws = [
-    "age_requirement",
-    "secure_storage_child_access_laws",
-    "background_check_or_purchase_permit"
-]
-
-# Extract X and y
-X_best_access_laws = df_with_indices[best_access_laws]
-y = df_with_indices["firearm_mortality_above_median"]
-
-# Handle missing values
-imputer = SimpleImputer(strategy="mean")
-X_imputed = imputer.fit_transform(X_best_access_laws)
-
-# Standardize features
-scaler = StandardScaler()
-X_scaled_best_access_laws = scaler.fit_transform(X_imputed)
-
-# Train Logistic Regression Model (without Lasso)
-logreg_model = LogisticRegression(penalty=None, solver="lbfgs", max_iter=1000)
-logreg_model.fit(X_scaled_best_access_laws, y)
-
-# Make predictions
-y_pred = logreg_model.predict(X_scaled_best_access_laws)
-y_prob = logreg_model.predict_proba(X_scaled_best_access_laws)[:, 1]
-
-# Evaluate model
-accuracy = accuracy_score(y, y_pred)
-precision = precision_score(y, y_pred)
-recall = recall_score(y, y_pred)
-f1 = f1_score(y, y_pred)
-roc_auc = auc(*roc_curve(y, y_prob)[:2])
-
-# Print results
-print(f"Logistic Regression Performance (Only 3 Access Laws):")
-print(f"Accuracy: {accuracy:.4f}")
-print(f"Precision: {precision:.4f}")
-print(f"Recall: {recall:.4f}")
-print(f"F1 Score: {f1:.4f}")
-print(f"ROC AUC: {roc_auc:.4f}")
-
-# Plot ROC Curve
-plt.figure(figsize=(8, 6))
-plt.plot(*roc_curve(y, y_prob)[:2], color="darkorange", lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
-plt.plot([0, 1], [0, 1], color="navy", linestyle="--")
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("Logistic Regression - ROC Curve (Only 3 Access Laws)")
-plt.legend(loc="lower right")
-plt.show()
-
-```
-
-✅ Accuracy: 80.4% → Higher than the Lasso model with the full index (73%)
-✅ Precision: 77.8% → Fewer false positives, meaning it predicts high-risk states more accurately
-✅ Recall: 84.0% → Still capturing most high-mortality states
-✅ F1 Score: 80.8% → A strong balance of precision & recall
-✅ ROC AUC: 88.1% → Best so far! Strong discrimination ability
-
-🚀 What This Means
-These 3 policies alone explain firearm mortality risk very well—there's no need for an index!
-Using the full index actually lowered accuracy—suggesting the extra policies added noise.
-This is now the strongest, most interpretable model!
-
-```{python}
-
-# Re-import necessary libraries since execution state was reset
-# Compute VIF for the selected 3 access laws without using ace tools
-import pandas as pd
-import numpy as np
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-# Define the selected 3 access control policies
-best_access_laws = [
-    "age_requirement",
-    "secure_storage_child_access_laws",
-    "background_check_or_purchase_permit"
-]
-
-# Extract data for VIF calculation
-X_vif = df_with_indices[best_access_laws].dropna()
-
-# Compute VIF for each feature
-vif_data = pd.DataFrame()
-vif_data["Feature"] = best_access_laws
-vif_data["VIF"] = [variance_inflation_factor(X_vif.values, i) for i in range(X_vif.shape[1])]
-
-# Display results
-vif_data
-
-
-```

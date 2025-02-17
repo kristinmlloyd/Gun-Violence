@@ -178,41 +178,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#research-objectives" id="toc-research-objectives" class="nav-link" data-scroll-target="#research-objectives">Research Objectives</a></li>
-  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a>
-  <ul>
-  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a></li>
-  </ul></li>
-  <li><a href="#addressing-multicollinearity-in-gun-policy-analysis" id="toc-addressing-multicollinearity-in-gun-policy-analysis" class="nav-link" data-scroll-target="#addressing-multicollinearity-in-gun-policy-analysis">Addressing Multicollinearity in Gun Policy Analysis</a>
-  <ul>
-  <li><a href="#the-challenge-of-correlated-policy-variables" id="toc-the-challenge-of-correlated-policy-variables" class="nav-link" data-scroll-target="#the-challenge-of-correlated-policy-variables">The Challenge of Correlated Policy Variables</a></li>
-  <li><a href="#variance-inflation-factor-vif-analysis" id="toc-variance-inflation-factor-vif-analysis" class="nav-link" data-scroll-target="#variance-inflation-factor-vif-analysis">Variance Inflation Factor (VIF) Analysis</a></li>
-  <li><a href="#composite-index-strategy" id="toc-composite-index-strategy" class="nav-link" data-scroll-target="#composite-index-strategy">Composite Index Strategy</a>
-  <ul class="collapse">
-  <li><a href="#developed-composite-indices" id="toc-developed-composite-indices" class="nav-link" data-scroll-target="#developed-composite-indices">Developed Composite Indices</a></li>
-  </ul></li>
-  <li><a href="#methodological-benefits" id="toc-methodological-benefits" class="nav-link" data-scroll-target="#methodological-benefits">Methodological Benefits</a></li>
-  <li><a href="#theoretical-implications" id="toc-theoretical-implications" class="nav-link" data-scroll-target="#theoretical-implications">Theoretical Implications</a></li>
-  </ul></li>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a>
-  <ul>
-  <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings">Key Findings</a></li>
-  </ul></li>
-  </ul>
-</nav>
-</nav>
+  
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -221,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div class="quarto-title-meta column-page-right">
+<div class="quarto-title-meta column-page">
 
     
   
@@ -233,23 +205,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This study examines the relationship between state-level gun policies and firearm mortality rates. Using data from all 50 states plus DC, we investigate how various gun policies relate to whether a state has above-median firearm mortality.</p>
-</section>
-<section id="research-objectives" class="level2">
-<h2 class="anchored" data-anchor-id="research-objectives">Research Objectives</h2>
-<ol type="1">
-<li>Identify gun policies most strongly associated with reduced firearm mortality</li>
-<li>Address statistical challenges in policy analysis</li>
-<li>Develop a robust predictive model for firearm mortality risk</li>
-</ol>
-</section>
-<section id="methodology" class="level2">
-<h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
-<section id="data-preparation" class="level3">
-<h3 class="anchored" data-anchor-id="data-preparation">Data Preparation</h3>
-<div id="43eb9fed" class="cell" data-execution_count="1">
+<p>Introduction</p>
+<p>In this analysis, we investigate the impact of various gun policies on firearm mortality rates across different states. Our main goal is to explore how different gun control measures (such as background checks, waiting periods, and concealed carry laws) affect the likelihood of high firearm mortality.</p>
+<p>Data Preparation</p>
+<p>We start by loading the dataset and preparing the binary predictors, which represent different gun control policies. The target variable will be whether the firearm mortality rate in each state is above or below the median value.</p>
+<div id="f0b9f946" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -261,51 +221,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, precision_score, recall_score, f1_score, roc_curve, auc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, precision_score, recall_score, f1_score, roc_curve, auc</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="32891d15" class="cell" data-execution_count="2">
+<div id="a4e75c9f" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="op">=</span> pd.read_csv(<span class="st">"data/merged_data.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>binary_predictors <span class="op">=</span> [</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prohibition_for_stalkers"</span>, <span class="st">"abusers_turn_in_gun_after_conviction"</span>, </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prohibition_for_domestic_abusers"</span>, <span class="st">"prohibition_for_convicted_domestic_abusers"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"waiting_period"</span>, <span class="st">"mental_health_in_background_check"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"funding_for_violence_intervention"</span>, <span class="st">"no_purchase_after_violent_offense"</span>, </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_requirement"</span>, <span class="st">"mentaI_illness_prohibitor"</span>, <span class="st">"hate_crime_prohibitor"</span>, </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gun_removal_program"</span>, <span class="st">"fugitive_from_justice_prohibitor"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"felony_prohibitor"</span>, <span class="st">"restraining_order_prohibitor"</span>, <span class="st">"no_open_carry"</span>, </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no_guns_in_k_through_twelve_schools"</span>, <span class="st">"no_guns_at_demonstrations"</span>, </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no_guns_on_college_campuses"</span>, <span class="st">"bar_concealed_carry_by_people_with_violent_misdemeanors"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"high_capacity_magazines_prohibited"</span>, <span class="st">"dealer_lisence_required"</span>, </span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"asault_weapons_prohibited"</span>, <span class="st">"secure_storage_child_access_laws"</span>, </span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"rejected_shoot_first_laws"</span>, <span class="st">"red_flag_laws"</span>, </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"background_check_or_purchase_permit"</span>, <span class="st">"concealed_carry_permit_required"</span>, </span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"extreme_risk_law"</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>merged_data[<span class="st">"firearm_mortality_above_median"</span>] <span class="op">=</span> (</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    merged_data[<span class="st">"firearm_mortality_by_state_2022"</span>] <span class="op">&gt;</span> </span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    merged_data[<span class="st">"firearm_mortality_by_state_2022"</span>].median()</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>).astype(<span class="bu">int</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the dataset</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/merged_data.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define binary predictors (indicators of gun control measures)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>binary_predictors <span class="op">=</span> [</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prohibition_for_stalkers"</span>, <span class="st">"abusers_turn_in_gun_after_conviction"</span>, </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prohibition_for_domestic_abusers"</span>, <span class="st">"prohibition_for_convicted_domestic_abusers"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"waiting_period"</span>, <span class="st">"mental_health_in_background_check"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"funding_for_violence_intervention"</span>, <span class="st">"no_purchase_after_violent_offense"</span>, </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_requirement"</span>, <span class="st">"mentaI_illness_prohibitor"</span>, <span class="st">"hate_crime_prohibitor"</span>, </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gun_removal_program"</span>, <span class="st">"fugitive_from_justice_prohibitor"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"felony_prohibitor"</span>, <span class="st">"restraining_order_prohibitor"</span>, <span class="st">"no_open_carry"</span>, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no_guns_in_k_through_twelve_schools"</span>, <span class="st">"no_guns_at_demonstrations"</span>, </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no_guns_on_college_campuses"</span>, <span class="st">"bar_concealed_carry_by_people_with_violent_misdemeanors"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"high_capacity_magazines_prohibited"</span>, <span class="st">"dealer_lisence_required"</span>, </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"asault_weapons_prohibited"</span>, <span class="st">"secure_storage_child_access_laws"</span>, </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"rejected_shoot_first_laws"</span>, <span class="st">"red_flag_laws"</span>, </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"background_check_or_purchase_permit"</span>, <span class="st">"concealed_carry_permit_required"</span>, </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"extreme_risk_law"</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new binary variable representing whether the state's firearm mortality rate is above or below the median</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"firearm_mortality_above_median"</span>] <span class="op">=</span> (</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"firearm_mortality_by_state_2022"</span>] <span class="op">&gt;</span> </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"firearm_mortality_by_state_2022"</span>].median()</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>).astype(<span class="bu">int</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a920b83e" class="cell" data-execution_count="3">
+<p>Variance Inflation Factor (VIF)</p>
+<p>We calculate the Variance Inflation Factor (VIF) to detect multicollinearity among our predictors. High multicollinearity can lead to unreliable coefficient estimates, which is problematic for regression analysis.</p>
+<div id="1d90aabb" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_vif(df, features):</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> df[features].dropna()  </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    vif_data <span class="op">=</span> pd.DataFrame()</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    vif_data[<span class="st">"Feature"</span>] <span class="op">=</span> features</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    vif_data[<span class="st">"VIF"</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> vif_data.sort_values(<span class="st">"VIF"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>vif_results <span class="op">=</span> calculate_vif(merged_data, binary_predictors)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>vif_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_vif(df, features):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> df[features].dropna()  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    vif_data[<span class="st">"Feature"</span>] <span class="op">=</span> features</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    vif_data[<span class="st">"VIF"</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> vif_data.sort_values(<span class="st">"VIF"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the VIF for the binary predictors</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>vif_results <span class="op">=</span> calculate_vif(df, binary_predictors)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>vif_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>/opt/miniconda3/envs/5000/lib/python3.11/site-packages/statsmodels/stats/outliers_influence.py:197: RuntimeWarning:
@@ -313,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 divide by zero encountered in scalar divide
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -477,133 +443,130 @@ divide by zero encountered in scalar divide
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="addressing-multicollinearity-in-gun-policy-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="addressing-multicollinearity-in-gun-policy-analysis">Addressing Multicollinearity in Gun Policy Analysis</h2>
-<section id="the-challenge-of-correlated-policy-variables" class="level3">
-<h3 class="anchored" data-anchor-id="the-challenge-of-correlated-policy-variables">The Challenge of Correlated Policy Variables</h3>
-<p>In our initial analysis, we encountered a significant statistical challenge known as multicollinearity. <strong>Multicollinearity</strong> occurs when predictor variables in a model are highly correlated with each other, which can lead to several statistical complications:</p>
-<ol type="1">
-<li><strong>Unstable Coefficient Estimates</strong>
-<ul>
-<li>Highly correlated predictors make it difficult to determine the individual impact of each policy</li>
-<li>Small changes in the data can cause large, unpredictable changes in coefficient values</li>
-</ul></li>
-<li><strong>Inflated Standard Errors</strong>
-<ul>
-<li>Correlated predictors increase the uncertainty of statistical estimates</li>
-<li>Challenges the identification of statistically significant policy effects</li>
-</ul></li>
-</ol>
-</section>
-<section id="variance-inflation-factor-vif-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="variance-inflation-factor-vif-analysis">Variance Inflation Factor (VIF) Analysis</h3>
-<p>Our initial Variance Inflation Factor (VIF) analysis revealed severe multicollinearity among gun policy variables:</p>
-<ul>
-<li>Multiple policy variables showed VIF scores well above the conventional threshold of 5</li>
-<li>Certain policy areas, such as red flag laws and extreme risk laws, were essentially measuring the same underlying constructs</li>
-</ul>
-</section>
-<section id="composite-index-strategy" class="level3">
-<h3 class="anchored" data-anchor-id="composite-index-strategy">Composite Index Strategy</h3>
-<p>To address these statistical challenges, we developed a <strong>composite index approach</strong>:</p>
-<ul>
-<li><strong>Grouping Related Policies</strong>: Combine related policy variables into comprehensive indices</li>
-<li><strong>Dimensionality Reduction</strong>: Reduce the number of predictors while preserving core policy information</li>
-<li><strong>Multicollinearity Mitigation</strong>: Minimize statistical noise and correlation between variables</li>
-<li><strong>Enhanced Interpretability</strong>: Provide a more robust and meaningful analysis</li>
-</ul>
-<section id="developed-composite-indices" class="level4">
-<h4 class="anchored" data-anchor-id="developed-composite-indices">Developed Composite Indices</h4>
-<ol type="1">
-<li><strong>Access Control Index</strong>
-<ul>
-<li><em>Combines</em>: Background check and dealer licensing policies</li>
-<li><em>Purpose</em>: Capture comprehensive firearms access control measures</li>
-</ul></li>
-<li><strong>Domestic Violence Index</strong>
-<ul>
-<li><em>Combines</em>: Policies restricting firearm access for domestic abusers</li>
-<li><em>Purpose</em>: Assess holistic approach to protecting vulnerable populations</li>
-</ul></li>
-<li><strong>Location Index</strong>
-<ul>
-<li><em>Combines</em>: Policies restricting guns in schools, demonstrations, and campuses</li>
-<li><em>Purpose</em>: Evaluate location-specific firearm restriction strategies</li>
-</ul></li>
-</ol>
-</section>
-</section>
-<section id="methodological-benefits" class="level3">
-<h3 class="anchored" data-anchor-id="methodological-benefits">Methodological Benefits</h3>
-<p>By creating these composite indices, we achieved several analytical improvements:</p>
-<ul>
-<li>Simplified statistical model</li>
-<li>Reduced noise from highly correlated variables</li>
-<li>Provided a more nuanced view of policy impacts</li>
-<li>Improved stability and interpretability of statistical analysis</li>
-</ul>
-</section>
-<section id="theoretical-implications" class="level3">
-<h3 class="anchored" data-anchor-id="theoretical-implications">Theoretical Implications</h3>
-<p>This approach allows us to move beyond examining individual policy variables and instead understand broader policy strategies and their relationship to firearm mortality.</p>
-<p><strong>Key Insight</strong>: Complex social problems require comprehensive, integrated policy approaches that cannot be fully captured by isolated, single-factor interventions.</p>
-<div id="7a0954c0" class="cell" data-execution_count="4">
+<p>Univariate Logistic Regression</p>
+<p>We perform univariate logistic regression to assess the relationship between each binary predictor and the target variable (firearm_mortality_above_median). The goal is to evaluate the impact of each feature individually.</p>
+<div id="8eab8be2" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_composite_indices(df):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    indices <span class="op">=</span> {</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'access_control_index'</span>: [</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">'background_check_or_purchase_permit'</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">'dealer_lisence_required'</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        ],</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'domestic_violence_index'</span>: [</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">'prohibition_for_domestic_abusers'</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">'prohibition_for_convicted_domestic_abusers'</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        ],</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'location_index'</span>: [</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'no_guns_in_k_through_twelve_schools'</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'no_guns_at_demonstrations'</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">'no_guns_on_college_campuses'</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        ]</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    df_copy <span class="op">=</span> df.copy()</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, columns <span class="kw">in</span> indices.items():</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        df_copy[name] <span class="op">=</span> df_copy[columns].fillna(<span class="dv">0</span>).mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df_copy</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>df_with_indices <span class="op">=</span> create_composite_indices(merged_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> univariate_logistic_regression(df, features, target):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature <span class="kw">in</span> features:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> sm.add_constant(df[[feature]].dropna())  <span class="co"># Add intercept</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> df[target][X.index]  <span class="co"># Ensure matching index</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> sm.Logit(y, X).fit(disp<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        results.append({</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Feature"</span>: feature,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Odds Ratio"</span>: np.exp(model.params[feature]),  <span class="co"># Convert log-odds to odds ratio</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"P-value"</span>: model.pvalues[feature]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    results_df <span class="op">=</span> pd.DataFrame(results).sort_values(<span class="st">"P-value"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results_df</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform univariate logistic regression on the binary predictors</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>univariate_results <span class="op">=</span> univariate_logistic_regression(df, binary_predictors, <span class="st">"firearm_mortality_above_median"</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(univariate_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                              Feature    Odds Ratio   P-value
+23                   secure_storage_child_access_laws  6.265664e-02  0.000090
+26                background_check_or_purchase_permit  5.263158e-02  0.000105
+8                                     age_requirement  5.263158e-02  0.000105
+24                          rejected_shoot_first_laws  6.349206e-02  0.000234
+25                                      red_flag_laws  1.008403e-01  0.000793
+2                    prohibition_for_domestic_abusers  8.695652e-02  0.000923
+28                                   extreme_risk_law  1.058824e-01  0.001055
+27                    concealed_carry_permit_required  1.058824e-01  0.001055
+0                            prohibition_for_stalkers  1.562500e-01  0.003849
+3          prohibition_for_convicted_domestic_abusers  1.428571e-01  0.004028
+20                 high_capacity_magazines_prohibited  4.347826e-02  0.004164
+12                   fugitive_from_justice_prohibitor  1.644737e-01  0.005087
+19  bar_concealed_carry_by_people_with_violent_mis...  1.764706e-01  0.005607
+10                              hate_crime_prohibitor  1.830065e-01  0.006017
+9                           mentaI_illness_prohibitor  1.800000e-01  0.006326
+21                            dealer_lisence_required  1.428571e-01  0.007793
+15                                      no_open_carry  5.928854e-02  0.009936
+4                                      waiting_period  1.239669e-01  0.012776
+1                abusers_turn_in_gun_after_conviction  1.904762e-01  0.013590
+7                   no_purchase_after_violent_offense  1.666667e-01  0.014365
+14                       restraining_order_prohibitor  2.285714e-01  0.045278
+6                   funding_for_violence_intervention  2.023810e-01  0.063884
+18                        no_guns_on_college_campuses  3.636364e-01  0.145490
+16                no_guns_in_k_through_twelve_schools  5.157895e-01  0.274404
+17                          no_guns_at_demonstrations  6.205128e-01  0.402843
+13                                  felony_prohibitor  9.000000e-01  0.873639
+5                   mental_health_in_background_check  9.130435e-01  0.916768
+11                                gun_removal_program  1.309142e-08  0.995073
+22                          asault_weapons_prohibited  3.165034e-33  1.000000</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/opt/miniconda3/envs/5000/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning:
+
+Maximum Likelihood optimization failed to converge. Check mle_retvals
+</code></pre>
+</div>
+</div>
+<p>Composite Indices</p>
+<p>Next, we combine related variables into composite indices. These indices represent overall policy categories, such as access control, domestic violence, and gun carry restrictions.</p>
+<div id="5f859bde" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_composite_indices(df):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    indices <span class="op">=</span> {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'access_control_index'</span>: [</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">'background_check_or_purchase_permit'</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">'dealer_lisence_required'</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">'secure_storage_child_access_laws'</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">'age_requirement'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">'fugitive_from_justice_prohibitor'</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">'mentaI_illness_prohibitor'</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">'waiting_period'</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'domestic_violence_index'</span>: [</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'prohibition_for_domestic_abusers'</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">'prohibition_for_convicted_domestic_abusers'</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">'restraining_order_prohibitor'</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">'prohibition_for_stalkers'</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">'bar_concealed_carry_by_people_with_violent_misdemeanors'</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">'abusers_turn_in_gun_after_conviction'</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">'no_purchase_after_violent_offense'</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">'rejected_shoot_first_laws'</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">'red_flag_laws'</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">'extreme_risk_law'</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">'hate_crime_prohibitor'</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'gun_carry_restrictions_index'</span>: [</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">'no_open_carry'</span>,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>            <span class="st">'high_capacity_magazines_prohibited'</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>            <span class="st">'concealed_carry_permit_required'</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    df_copy <span class="op">=</span> df.copy()</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, columns <span class="kw">in</span> indices.items():</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        df_copy[name] <span class="op">=</span> df_copy[columns].fillna(<span class="dv">0</span>).mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df_copy</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Create composite indices for the dataset</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>df_with_indices <span class="op">=</span> create_composite_indices(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="04ea5917" class="cell" data-execution_count="5">
+<p>VIF After Composite Indices</p>
+<p>We recalculate the VIF for the composite indices to check for multicollinearity after creating the indices.</p>
+<div id="efae4a7c" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_vif(df, features):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> df[features].dropna()  </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    vif_data <span class="op">=</span> pd.DataFrame()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    vif_data[<span class="st">"Feature"</span>] <span class="op">=</span> features</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    vif_data[<span class="st">"VIF"</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> vif_data.sort_values(<span class="st">"VIF"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>policy_features_with_indices <span class="op">=</span> [</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'access_control_index'</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'domestic_violence_index'</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'location_index'</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'age_requirement'</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'mentaI_illness_prohibitor'</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hate_crime_prohibitor'</span>,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">'restraining_order_prohibitor'</span>,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'rejected_shoot_first_laws'</span>,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'concealed_carry_permit_required'</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>vif_results_after_indices <span class="op">=</span> calculate_vif(df_with_indices, policy_features_with_indices)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>vif_results_after_indices</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>policy_features_with_indices <span class="op">=</span> [</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'access_control_index'</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'domestic_violence_index'</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'gun_carry_restrictions_index'</span>, </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>vif_results_after_indices <span class="op">=</span> calculate_vif(df_with_indices, policy_features_with_indices)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>vif_results_after_indices</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
@@ -617,49 +580,19 @@ divide by zero encountered in scalar divide
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>access_control_index</td>
-<td>7.892348</td>
-</tr>
-<tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>domestic_violence_index</td>
-<td>4.955779</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>concealed_carry_permit_required</td>
-<td>4.852453</td>
+<td>15.114882</td>
 </tr>
 <tr class="even">
+<td data-quarto-table-cell-role="th">0</td>
+<td>access_control_index</td>
+<td>13.521685</td>
+</tr>
+<tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>location_index</td>
-<td>4.554419</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">7</td>
-<td>rejected_shoot_first_laws</td>
-<td>4.463287</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>age_requirement</td>
-<td>4.177033</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>mentaI_illness_prohibitor</td>
-<td>3.085369</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>hate_crime_prohibitor</td>
-<td>2.500030</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>restraining_order_prohibitor</td>
-<td>2.150227</td>
+<td>gun_carry_restrictions_index</td>
+<td>8.336259</td>
 </tr>
 </tbody>
 </table>
@@ -667,187 +600,189 @@ divide by zero encountered in scalar divide
 </div>
 </div>
 </div>
-<div id="aa956c69" class="cell" data-execution_count="6">
+<p>Preparing Data for Logistic Regression</p>
+<p>Now we prepare the data for logistic regression. This step involves handling missing values, scaling the features, and splitting the data into training and testing sets.</p>
+<div id="7a139dd3" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_data_for_logistic_regression(df):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> [</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'access_control_index'</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'domestic_violence_index'</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'location_index'</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'age_requirement'</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'mentaI_illness_prohibitor'</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hate_crime_prohibitor'</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'restraining_order_prohibitor'</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'rejected_shoot_first_laws'</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'concealed_carry_permit_required'</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    df_clean <span class="op">=</span> df[features <span class="op">+</span> [<span class="st">'firearm_mortality_above_median'</span>]].copy()</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    imputer <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">"mean"</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    X_imputed <span class="op">=</span> imputer.fit_transform(df_clean[features])</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> df_clean[<span class="st">'firearm_mortality_above_median'</span>]</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Original data shape: </span><span class="sc">{</span>df<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Cleaned data shape: (</span><span class="sc">{</span><span class="bu">len</span>(y)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">len</span>(features)<span class="sc">}</span><span class="ss">)"</span>)  </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    X_scaled <span class="op">=</span> scaler.fit_transform(X_imputed)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X_scaled, y, features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_data_for_logistic_regression(df):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> [</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'access_control_index'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'domestic_violence_index'</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'gun_carry_restrictions_index'</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    df_clean <span class="op">=</span> df[features <span class="op">+</span> [<span class="st">'firearm_mortality_above_median'</span>]].copy()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle missing values using mean imputation</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    imputer <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">"mean"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    X_imputed <span class="op">=</span> imputer.fit_transform(df_clean[features])</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> df_clean[<span class="st">'firearm_mortality_above_median'</span>]</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Original data shape: </span><span class="sc">{</span>df<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Cleaned data shape: (</span><span class="sc">{</span><span class="bu">len</span>(y)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">len</span>(features)<span class="sc">}</span><span class="ss">)"</span>)  </span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Scale the features</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    X_scaled <span class="op">=</span> scaler.fit_transform(X_imputed)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X_scaled, y, features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="93a4f714" class="cell" data-execution_count="7">
+<p>Logistic Regression Model Comparison</p>
+<p>We compare multiple logistic regression models to determine which one works best. Models include Standard Logistic Regression, Lasso (L1) Logistic Regression, Ridge (L2) Logistic Regression, and Elastic Net Logistic Regression.</p>
+<div id="30a93b98" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X_scaled, y, features <span class="op">=</span> prepare_data_for_logistic_regression(df_with_indices)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Standard Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="va">None</span>, solver<span class="op">=</span><span class="st">"lbfgs"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>),</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Lasso (L1) Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="st">"l1"</span>, solver<span class="op">=</span><span class="st">"liblinear"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>),</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Ridge (L2) Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="st">"l2"</span>, solver<span class="op">=</span><span class="st">"liblinear"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>),</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Elastic Net Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="st">"elasticnet"</span>, solver<span class="op">=</span><span class="st">"saga"</span>, l1_ratio<span class="op">=</span><span class="fl">0.5</span>, max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>cv_results <span class="op">=</span> {}</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    scores <span class="op">=</span> cross_val_score(model, X_scaled, y, cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">"accuracy"</span>) </span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    cv_results[name] <span class="op">=</span> {</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Mean Accuracy"</span>: np.mean(scores),</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Std Dev"</span>: np.std(scores)</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>cv_results_df <span class="op">=</span> pd.DataFrame(cv_results).T</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>cv_results_df.sort_values(<span class="st">"Mean Accuracy"</span>, ascending<span class="op">=</span><span class="va">False</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Logistic Regression Model Comparison:"</span>)</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cv_results_df.to_markdown()) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>X_scaled, y, features <span class="op">=</span> prepare_data_for_logistic_regression(df_with_indices)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Standard Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="va">None</span>, solver<span class="op">=</span><span class="st">"lbfgs"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Lasso (L1) Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="st">"l1"</span>, solver<span class="op">=</span><span class="st">"liblinear"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Ridge (L2) Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="st">"l2"</span>, solver<span class="op">=</span><span class="st">"liblinear"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Elastic Net Logistic Regression"</span>: LogisticRegression(penalty<span class="op">=</span><span class="st">"elasticnet"</span>, solver<span class="op">=</span><span class="st">"saga"</span>, l1_ratio<span class="op">=</span><span class="fl">0.5</span>, max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>cv_results <span class="op">=</span> {}</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    scores <span class="op">=</span> cross_val_score(model, X_scaled, y, cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">"accuracy"</span>) </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    cv_results[name] <span class="op">=</span> {</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Mean Accuracy"</span>: np.mean(scores),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Std Dev"</span>: np.std(scores)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>cv_results_df <span class="op">=</span> pd.DataFrame(cv_results).T</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>cv_results_df.sort_values(<span class="st">"Mean Accuracy"</span>, ascending<span class="op">=</span><span class="va">False</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Logistic Regression Model Comparison:"</span>)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cv_results_df.to_markdown()) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Original data shape: (51, 60)
-Cleaned data shape: (51, 9)
+Cleaned data shape: (51, 3)
 Logistic Regression Model Comparison:
 |                                 |   Mean Accuracy |   Std Dev |
 |:--------------------------------|----------------:|----------:|
-| Elastic Net Logistic Regression |        0.743636 |  0.104352 |
-| Ridge (L2) Logistic Regression  |        0.741818 |  0.137822 |
-| Lasso (L1) Logistic Regression  |        0.703636 |  0.129538 |
-| Standard Logistic Regression    |        0.703636 |  0.144153 |</code></pre>
+| Standard Logistic Regression    |        0.801818 | 0.0661578 |
+| Lasso (L1) Logistic Regression  |        0.801818 | 0.0661578 |
+| Elastic Net Logistic Regression |        0.801818 | 0.0661578 |
+| Ridge (L2) Logistic Regression  |        0.781818 | 0.100248  |</code></pre>
 </div>
 </div>
-<div id="37e40065" class="cell" data-execution_count="8">
+<p>Model Evaluation: Lasso Logistic Regression</p>
+<p>Finally, we evaluate the performance of the Lasso Logistic Regression model using metrics such as accuracy, precision, recall, F1 score, and ROC AUC.</p>
+<div id="1d3089b6" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X_scaled, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>, stratify<span class="op">=</span>y)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>elastic_net_model <span class="op">=</span> LogisticRegression(penalty<span class="op">=</span><span class="st">"elasticnet"</span>, solver<span class="op">=</span><span class="st">"saga"</span>, l1_ratio<span class="op">=</span><span class="fl">0.5</span>, max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>elastic_net_model.fit(X_train, y_train)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> elastic_net_model.predict(X_test)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>y_prob <span class="op">=</span> elastic_net_model.predict_proba(X_test)[:, <span class="dv">1</span>]  </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> accuracy_score(y_test, y_pred)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>precision <span class="op">=</span> precision_score(y_test, y_pred)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>recall <span class="op">=</span> recall_score(y_test, y_pred)</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>f1 <span class="op">=</span> f1_score(y_test, y_pred)</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>fpr, tpr, _ <span class="op">=</span> roc_curve(y_test, y_prob)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Elastic Net Model Performance:"</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy: </span><span class="sc">{</span>accuracy<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Precision: </span><span class="sc">{</span>precision<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Recall: </span><span class="sc">{</span>recall<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F1 Score: </span><span class="sc">{</span>f1<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC: </span><span class="sc">{</span>roc_auc<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>plt.plot(fpr, tpr, color<span class="op">=</span><span class="st">"darkorange"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f'ROC curve (AUC = </span><span class="sc">{</span>roc_auc<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], color<span class="op">=</span><span class="st">"navy"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"False Positive Rate"</span>)</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"True Positive Rate"</span>)</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Elastic Net Logistic Regression - ROC Curve"</span>)</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X_scaled, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>, stratify<span class="op">=</span>y)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Lasso (L1) Logistic Regression model</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="op">=</span> LogisticRegression(penalty<span class="op">=</span><span class="st">"l1"</span>, solver<span class="op">=</span><span class="st">"liblinear"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>lasso_model.fit(X_train, y_train)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict on the test set</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> lasso_model.predict(X_test)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>y_prob <span class="op">=</span> lasso_model.predict_proba(X_test)[:, <span class="dv">1</span>]  </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> accuracy_score(y_test, y_pred)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>precision <span class="op">=</span> precision_score(y_test, y_pred)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>recall <span class="op">=</span> recall_score(y_test, y_pred)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>f1 <span class="op">=</span> f1_score(y_test, y_pred)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>fpr, tpr, _ <span class="op">=</span> roc_curve(y_test, y_prob)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Lasso Model Performance:"</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy: </span><span class="sc">{</span>accuracy<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Precision: </span><span class="sc">{</span>precision<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Recall: </span><span class="sc">{</span>recall<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F1 Score: </span><span class="sc">{</span>f1<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC: </span><span class="sc">{</span>roc_auc<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>plt.plot(fpr, tpr, color<span class="op">=</span><span class="st">"darkorange"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f'ROC curve (AUC = </span><span class="sc">{</span>roc_auc<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], color<span class="op">=</span><span class="st">"navy"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"False Positive Rate"</span>)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"True Positive Rate"</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Lasso Logistic Regression - ROC Curve"</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Elastic Net Model Performance:
+<pre><code>Lasso Model Performance:
 Accuracy: 0.6364
 Precision: 0.5714
 Recall: 0.8000
 F1 Score: 0.6667
-ROC AUC: 0.6667</code></pre>
+ROC AUC: 0.8167</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="log_files/figure-html/cell-9-output-2.png" width="663" height="523" class="figure-img"></p>
+<p><img src="log_files/figure-html/cell-10-output-2.png" width="663" height="523" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="5da2d707" class="cell" data-execution_count="9">
+<p>Lasso Feature Importance</p>
+<p>We visualize the feature importance for the Lasso model, which gives insights into which policies are most influential in predicting firearm mortality.</p>
+<div id="9802bc61" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> elastic_net_feature_importance(X, y, features):</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> LogisticRegression(penalty<span class="op">=</span><span class="st">"elasticnet"</span>, solver<span class="op">=</span><span class="st">"saga"</span>, l1_ratio<span class="op">=</span><span class="fl">0.5</span>, max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    model.fit(X, y)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    feature_importance <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Feature'</span>: features,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Coefficient'</span>: np.<span class="bu">abs</span>(model.coef_[<span class="dv">0</span>]),  </span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Sign'</span>: np.sign(model.coef_[<span class="dv">0</span>]) </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    }).sort_values(<span class="st">'Coefficient'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Feature Importance:"</span>)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(feature_importance)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    plt.barh(</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        feature_importance[<span class="st">"Feature"</span>], </span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        feature_importance[<span class="st">"Coefficient"</span>],</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[<span class="st">"green"</span> <span class="cf">if</span> sign <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"red"</span> <span class="cf">for</span> sign <span class="kw">in</span> feature_importance[<span class="st">"Sign"</span>]]</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Absolute Coefficient Magnitude"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Feature"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"Elastic Net Logistic Regression - Feature Importance"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    plt.gca().invert_yaxis()  </span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> feature_importance</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>elastic_net_feature_importance(X_scaled, y, features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lasso_feature_importance(X, y, features):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> LogisticRegression(penalty<span class="op">=</span><span class="st">"l1"</span>, solver<span class="op">=</span><span class="st">"liblinear"</span>, max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    model.fit(X, y)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    feature_importance <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Feature'</span>: features,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Coefficient'</span>: model.coef_[<span class="dv">0</span>],  </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Abs_Coefficient'</span>: np.<span class="bu">abs</span>(model.coef_[<span class="dv">0</span>]),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Sign'</span>: np.sign(model.coef_[<span class="dv">0</span>]) </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    }).sort_values(<span class="st">'Abs_Coefficient'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Lasso Feature Importance:"</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(feature_importance)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot feature importance</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    plt.barh(</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>        feature_importance[<span class="st">"Feature"</span>], </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        feature_importance[<span class="st">"Abs_Coefficient"</span>],</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[<span class="st">"green"</span> <span class="cf">if</span> sign <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"red"</span> <span class="cf">for</span> sign <span class="kw">in</span> feature_importance[<span class="st">"Sign"</span>]]</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Absolute Coefficient Magnitude"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Feature"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"Lasso Logistic Regression - Feature Importance"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    plt.gca().invert_yaxis()  </span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> feature_importance</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>lasso_feature_importance(X_scaled, y, features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Feature Importance:
-                           Feature  Coefficient  Sign
-3                  age_requirement     0.678824  -1.0
-0             access_control_index     0.665124  -1.0
-4        mentaI_illness_prohibitor     0.389913  -1.0
-5            hate_crime_prohibitor     0.357254  -1.0
-2                   location_index     0.334511   1.0
-7        rejected_shoot_first_laws     0.294789  -1.0
-1          domestic_violence_index     0.263581  -1.0
-6     restraining_order_prohibitor     0.042961   1.0
-8  concealed_carry_permit_required     0.000000   0.0</code></pre>
+Lasso Feature Importance:
+                        Feature  Coefficient  Abs_Coefficient  Sign
+0          access_control_index    -1.751779         1.751779  -1.0
+1       domestic_violence_index    -0.014656         0.014656  -1.0
+2  gun_carry_restrictions_index     0.000000         0.000000   0.0</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="log_files/figure-html/cell-10-output-2.png" width="949" height="565" class="figure-img"></p>
+<p><img src="log_files/figure-html/cell-11-output-2.png" width="950" height="565" class="figure-img"></p>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -857,61 +792,29 @@ Feature Importance:
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">Feature</th>
 <th data-quarto-table-cell-role="th">Coefficient</th>
+<th data-quarto-table-cell-role="th">Abs_Coefficient</th>
 <th data-quarto-table-cell-role="th">Sign</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">3</td>
-<td>age_requirement</td>
-<td>0.678824</td>
-<td>-1.0</td>
-</tr>
-<tr class="even">
 <td data-quarto-table-cell-role="th">0</td>
 <td>access_control_index</td>
-<td>0.665124</td>
-<td>-1.0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>mentaI_illness_prohibitor</td>
-<td>0.389913</td>
+<td>-1.751779</td>
+<td>1.751779</td>
 <td>-1.0</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>hate_crime_prohibitor</td>
-<td>0.357254</td>
+<td data-quarto-table-cell-role="th">1</td>
+<td>domestic_violence_index</td>
+<td>-0.014656</td>
+<td>0.014656</td>
 <td>-1.0</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>location_index</td>
-<td>0.334511</td>
-<td>1.0</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>rejected_shoot_first_laws</td>
-<td>0.294789</td>
-<td>-1.0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">1</td>
-<td>domestic_violence_index</td>
-<td>0.263581</td>
-<td>-1.0</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">6</td>
-<td>restraining_order_prohibitor</td>
-<td>0.042961</td>
-<td>1.0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>concealed_carry_permit_required</td>
+<td>gun_carry_restrictions_index</td>
+<td>0.000000</td>
 <td>0.000000</td>
 <td>0.0</td>
 </tr>
@@ -921,16 +824,8 @@ Feature Importance:
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="conclusions" class="level2">
-<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
-<section id="key-findings" class="level3">
-<h3 class="anchored" data-anchor-id="key-findings">Key Findings</h3>
 
 
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
