@@ -331,3 +331,5 @@ consider validating these composite
 indices with factor analysis or principal
 component analysis to ensure they represent
 coherent underlying constructs.
+
+WORK ON THIS IN A SEPARATE FILE. DO NOT TOUCH THIS!!
