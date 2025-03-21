@@ -7,6 +7,23 @@ format:
     code-fold: true
 ---
 
+```{python}
+import geopandas as gpd
+
+# Load U.S. state shapefile from Census Bureau
+states_url = "https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip"
+states_map = gpd.read_file(states_url)
+
+# Convert geometry to WKT format
+states_map["geometry"] = states_map["geometry"].apply(lambda geom: geom.wkt)
+
+# Select relevant columns
+states_map = states_map[["NAME", "geometry"]]  # You can add more columns if needed
+
+# Save as CSV
+states_map.to_csv("data/us_states_geodata.csv", index=False)
+```
+
 ## Problem & Objectives
 
 Firearm mortality remains a pressing public health issue in the United States, with gun-related deaths accounting for a significant portion of homicides, suicides, and accidental fatalities. The complexity of this issue extends beyond crime statistics, encompassing social, economic, and policy-driven factors that influence gun violence trends. This project aims to analyze firearm mortality rates across U.S. states and examine the impact of gun control policies, domestic violence-related firearm deaths, and access to mental health resources. By identifying key contributing factors, this study seeks to provide insights into the effectiveness of existing regulations and potential strategies to mitigate firearm-related deaths. This project will contribute to the broader discourse on public safety and policy effectiveness in reducing gun violence.
@@ -66,13 +83,82 @@ plt.xticks([])
 plt.grid(axis='x', linestyle="--", alpha=0.7)
 plt.xlim(0, gun_death_distribution['State_Count'].max() + 5)  # Added padding to the x-axis
 plt.show()
-
 ```
 
 This plot indicates that there are many more restrictive states than protective states, with a total of 27 states having restrictive policies compared to 18 states with protective policies. This imbalance is particularly evident in the 'most restrictive' category, which alone accounts for 16 states.
 
 ```{python}
+import pandas as pd
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import LinearSegmentedColormap
+from shapely import wkt
+from shapely.geometry import MultiPolygon
+from shapely.wkt import dumps
 
+# Load dataset
+gun_deaths = pd.read_csv("data/merged_data.csv")
+
+# Ensure state names are lowercase for merging
+gun_deaths["State"] = gun_deaths["State"].str.lower()
+
+# Define mortality bins and labels
+mortality_bins = [0, 10, 15, 20, 25, float("inf")]
+mortality_labels = [1, 2, 3, 4, 5]
+
+# Assign states into mortality categories
+gun_deaths["mortality_score"] = pd.cut(
+    gun_deaths["firearm_mortality_by_state_2022"], 
+    bins=mortality_bins, 
+    labels=mortality_labels,
+    right=False
+).astype(float)
+
+# Load U.S. state shapefile from Census Bureau
+states_url = "https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip"
+states_map = gpd.read_file(states_url)
+
+# Ensure lowercase for merging
+states_map["region"] = states_map["NAME"].str.lower()
+
+# Merge state map with gun deaths data
+map_data = states_map.merge(gun_deaths, left_on="region", right_on="State", how="left")
+
+# Remove Aleutian Islands from Alaska
+alaska_index = map_data[map_data["region"] == "alaska"].index[0]
+alaska_geom = map_data.loc[alaska_index, "geometry"]
+
+# Ensure it's a MultiPolygon and filter out Aleutian Islands
+if isinstance(alaska_geom, MultiPolygon):
+    # Keep only the largest landmass (mainland Alaska)
+    mainland_polygon = max(alaska_geom.geoms, key=lambda p: p.area)
+    map_data.at[alaska_index, "geometry"] = mainland_polygon
+
+# Define color map
+colors = ["#68bb59", "#acdf87", "#fab733", "#ff6242", "#c61a09"]
+cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
+
+# Plot Gun Deaths by State
+fig, ax = plt.subplots(figsize=(16, 10))
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="3%", pad=0.2)
+
+# Plot states
+map_data.plot(column="mortality_score", cmap=cmap, linewidth=0.3, edgecolor="black", ax=ax, legend=True, cax=cax)
+
+# Customize plot
+ax.set_title("Firearm Mortality by State (2022)", fontsize=18)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.set_frame_on(False)
+
+plt.show()
+```
+
+```{python}
+'''
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -108,6 +194,34 @@ states_map["region"] = states_map["NAME"].str.lower()
 # Merge state map with gun deaths data
 map_data = states_map.merge(gun_deaths, left_on="region", right_on="State", how="left")
 
+# Ensure the geometry is converted back to WKT correctly
+from shapely.wkt import dumps
+
+# Reload dataset
+geo_data = pd.read_csv("data/us_states_geodata.csv")
+
+# Extract Alaska's geometry
+alaska_geom = wkt.loads(geo_data.loc[geo_data["NAME"].str.lower() == "alaska", "geometry"].values[0])
+
+# Ensure it's a MultiPolygon and filter out Aleutian Islands
+if isinstance(alaska_geom, MultiPolygon):
+    mainland_polygons = [p for p in alaska_geom.geoms if p.centroid.x > -160]
+    new_alaska_geom = MultiPolygon(mainland_polygons)
+
+    # Update the geometry in the dataset with the corrected WKT format
+    geo_data.loc[geo_data["NAME"].str.lower() == "alaska", "geometry"] = dumps(new_alaska_geom)
+
+# Save the cleaned dataset
+cleaned_geo_data_path = "/data/cleaned_us_states_geodata.csv"
+geo_data.to_csv(cleaned_geo_data_path, index=False)
+
+# Provide the cleaned file path
+print(cleaned_geo_data_path)
+
+map_data = map_data[map_data["region"] != "alaska"]  # Remove original Alaska
+new_geo_data = gpd.read_file("path/to/cleaned_us_states_geodata.csv")  # Load cleaned data
+map_data = pd.concat([map_data, new_geo_data[new_geo_data["region"] == "alaska"]], ignore_index=True)  # Add fixed Alaska
+
 # Define color map
 colors = ["#68bb59", "#acdf87", "#fab733", "#ff6242", "#c61a09"]
 cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
@@ -127,7 +241,7 @@ ax.set_yticks([])
 ax.set_frame_on(False)
 
 plt.show()
-
+'''
 ```
 
 ## Motivation and Case Studies

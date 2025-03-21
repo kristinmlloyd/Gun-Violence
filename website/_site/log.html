@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.32">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,10 +70,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2486e1f0a3ee9ee1fc393803a1361cdb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ed27da4cc5166ecd7aed0178833e54f4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -178,13 +178,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
-  
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#part-2" id="toc-part-2" class="nav-link active" data-scroll-target="#part-2">part 2</a></li>
+  </ul>
+</nav>
+</nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -193,7 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -209,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In this analysis, we investigate the impact of various gun policies on firearm mortality rates across different states. Our main goal is to explore how different gun control measures (such as background checks, waiting periods, and concealed carry laws) affect the likelihood of high firearm mortality.</p>
 <p>Data Preparation</p>
 <p>We start by loading the dataset and preparing the binary predictors, which represent different gun control policies. The target variable will be whether the firearm mortality rate in each state is above or below the median value.</p>
-<div id="f0b9f946" class="cell" data-execution_count="1">
+<div id="5caef7cb" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -226,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a4e75c9f" class="cell" data-execution_count="2">
+<div id="41db50bb" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the dataset</span></span>
@@ -259,7 +267,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Variance Inflation Factor (VIF)</p>
 <p>We calculate the Variance Inflation Factor (VIF) to detect multicollinearity among our predictors. High multicollinearity can lead to unreliable coefficient estimates, which is problematic for regression analysis.</p>
-<div id="1d90aabb" class="cell" data-execution_count="3">
+<div id="6e2b3231" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_vif(df, features):</span>
@@ -274,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>vif_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>/opt/miniconda3/envs/5000/lib/python3.11/site-packages/statsmodels/stats/outliers_influence.py:197: RuntimeWarning:
+<pre><code>/home/platinumfish/miniconda3/lib/python3.12/site-packages/statsmodels/stats/outliers_influence.py:197: RuntimeWarning:
 
 divide by zero encountered in scalar divide
 </code></pre>
@@ -293,13 +301,13 @@ divide by zero encountered in scalar divide
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">28</td>
-<td>extreme_risk_law</td>
+<td data-quarto-table-cell-role="th">25</td>
+<td>red_flag_laws</td>
 <td>inf</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">25</td>
-<td>red_flag_laws</td>
+<td data-quarto-table-cell-role="th">28</td>
+<td>extreme_risk_law</td>
 <td>inf</td>
 </tr>
 <tr class="odd">
@@ -445,7 +453,7 @@ divide by zero encountered in scalar divide
 </div>
 <p>Univariate Logistic Regression</p>
 <p>We perform univariate logistic regression to assess the relationship between each binary predictor and the target variable (firearm_mortality_above_median). The goal is to evaluate the impact of each feature individually.</p>
-<div id="8eab8be2" class="cell" data-execution_count="4">
+<div id="b2c70dc1" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> univariate_logistic_regression(df, features, target):</span>
@@ -500,7 +508,7 @@ divide by zero encountered in scalar divide
 22                          asault_weapons_prohibited  3.165034e-33  1.000000</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/opt/miniconda3/envs/5000/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning:
+<pre><code>/home/platinumfish/miniconda3/lib/python3.12/site-packages/statsmodels/base/model.py:607: ConvergenceWarning:
 
 Maximum Likelihood optimization failed to converge. Check mle_retvals
 </code></pre>
@@ -508,7 +516,7 @@ Maximum Likelihood optimization failed to converge. Check mle_retvals
 </div>
 <p>Composite Indices</p>
 <p>Next, we combine related variables into composite indices. These indices represent overall policy categories, such as access control, domestic violence, and gun carry restrictions.</p>
-<div id="5f859bde" class="cell" data-execution_count="5">
+<div id="c099c047" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_composite_indices(df):</span>
@@ -554,7 +562,7 @@ Maximum Likelihood optimization failed to converge. Check mle_retvals
 </div>
 <p>VIF After Composite Indices</p>
 <p>We recalculate the VIF for the composite indices to check for multicollinearity after creating the indices.</p>
-<div id="efae4a7c" class="cell" data-execution_count="6">
+<div id="cacbe244" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>policy_features_with_indices <span class="op">=</span> [</span>
@@ -602,7 +610,7 @@ Maximum Likelihood optimization failed to converge. Check mle_retvals
 </div>
 <p>Preparing Data for Logistic Regression</p>
 <p>Now we prepare the data for logistic regression. This step involves handling missing values, scaling the features, and splitting the data into training and testing sets.</p>
-<div id="7a139dd3" class="cell" data-execution_count="7">
+<div id="7e77692d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_data_for_logistic_regression(df):</span>
@@ -632,7 +640,7 @@ Maximum Likelihood optimization failed to converge. Check mle_retvals
 </div>
 <p>Logistic Regression Model Comparison</p>
 <p>We compare multiple logistic regression models to determine which one works best. Models include Standard Logistic Regression, Lasso (L1) Logistic Regression, Ridge (L2) Logistic Regression, and Elastic Net Logistic Regression.</p>
-<div id="30a93b98" class="cell" data-execution_count="8">
+<div id="392242c7" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>X_scaled, y, features <span class="op">=</span> prepare_data_for_logistic_regression(df_with_indices)</span>
@@ -677,7 +685,7 @@ Logistic Regression Model Comparison:
 </div>
 <p>Model Evaluation: Lasso Logistic Regression</p>
 <p>Finally, we evaluate the performance of the Lasso Logistic Regression model using metrics such as accuracy, precision, recall, F1 score, and ROC AUC.</p>
-<div id="1d3089b6" class="cell" data-execution_count="9">
+<div id="c297b27e" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X_scaled, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>, stratify<span class="op">=</span>y)</span>
@@ -732,7 +740,7 @@ ROC AUC: 0.8167</code></pre>
 </div>
 <p>Lasso Feature Importance</p>
 <p>We visualize the feature importance for the Lasso model, which gives insights into which policies are most influential in predicting firearm mortality.</p>
-<div id="9802bc61" class="cell" data-execution_count="10">
+<div id="faa375f4" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lasso_feature_importance(X, y, features):</span>
@@ -771,14 +779,14 @@ ROC AUC: 0.8167</code></pre>
 <pre><code>
 Lasso Feature Importance:
                         Feature  Coefficient  Abs_Coefficient  Sign
-0          access_control_index    -1.751779         1.751779  -1.0
-1       domestic_violence_index    -0.014656         0.014656  -1.0
+0          access_control_index    -1.751330         1.751330  -1.0
+1       domestic_violence_index    -0.015004         0.015004  -1.0
 2  gun_carry_restrictions_index     0.000000         0.000000   0.0</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="log_files/figure-html/cell-11-output-2.png" width="950" height="565" class="figure-img"></p>
+<p><img src="log_files/figure-html/cell-11-output-2.png" width="949" height="566" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -800,15 +808,15 @@ Lasso Feature Importance:
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>access_control_index</td>
-<td>-1.751779</td>
-<td>1.751779</td>
+<td>-1.751330</td>
+<td>1.751330</td>
 <td>-1.0</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>domestic_violence_index</td>
-<td>-0.014656</td>
-<td>0.014656</td>
+<td>-0.015004</td>
+<td>0.015004</td>
 <td>-1.0</td>
 </tr>
 <tr class="odd">
@@ -824,8 +832,12 @@ Lasso Feature Importance:
 </div>
 </div>
 </div>
+<section id="part-2" class="level4">
+<h4 class="anchored" data-anchor-id="part-2">part 2</h4>
+<p>work on improving the model now</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
