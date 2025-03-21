@@ -327,3 +327,7 @@ lasso_feature_importance(X_scaled, y, features)
 
 work on improving the model now
 
+consider validating these composite
+indices with factor analysis or principal
+component analysis to ensure they represent
+coherent underlying constructs.
