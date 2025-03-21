@@ -8,19 +8,19 @@ format:
 ---
 ```{python}
 
-import pandas as pd
+# Load the datasets
+continuous = pd.read_csv("data/continuous.csv")
+binary = pd.read_csv("data/binary.csv")
 
-# Load the CSV files
-factors = pd.read_csv("../data/factors.csv")
-policy = pd.read_csv("../data/policy.csv")
-violence = pd.read_csv("../data/violence.csv")
+# Merge the datasets on the State column
+merged_data = pd.merge(continuous, binary, on='State', how='inner')
 
-# Perform an outer merge on 'State'
-merged_data = factors.merge(policy, on="State", how="outer").merge(violence, on="State", how="outer")
+# Display the first few rows of the merged dataframe
+print(merged_data.head())
 
-# Save the merged file
-merged_data.to_csv("../data/merged_data.csv", index=False)
+# Save the merged data to a new CSV file
+merged_data.to_csv("data/merged_data.csv", index=False)
 
-print("Data merged and saved successfully!")
+print(f"Successfully merged datasets with {len(merged_data)} rows. Saved to 'data/merged_data.csv'")
 
 ```

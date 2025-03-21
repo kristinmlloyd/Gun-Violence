@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-merged_data = pd.read_csv("data/merged_data.csv")
+merged_data = pd.read_csv("data/continuous.csv")
 
 ```
 
