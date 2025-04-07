@@ -1,0 +1,241 @@
+---
+title: ""
+format: 
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.spatial.distance import pdist
+
+# Load the dataset
+df = pd.read_csv("data/merged_data.csv")
+
+# Define all binary policy predictors
+binary_predictors = [
+    "prohibition_for_stalkers", "abusers_turn_in_gun_after_conviction", 
+    "prohibition_for_domestic_abusers", "prohibition_for_convicted_domestic_abusers",
+    "waiting_period", "mental_health_in_background_check",
+    "funding_for_violence_intervention", "no_purchase_after_violent_offense", 
+    "age_requirement", "mentaI_illness_prohibitor", "hate_crime_prohibitor", 
+    "gun_removal_program", "fugitive_from_justice_prohibitor",
+    "felony_prohibitor", "restraining_order_prohibitor", "no_open_carry", 
+    "no_guns_in_k_through_twelve_schools", "no_guns_at_demonstrations", 
+    "no_guns_on_college_campuses", "bar_concealed_carry_by_people_with_violent_misdemeanors",
+    "high_capacity_magazines_prohibited", "dealer_lisence_required", 
+    "asault_weapons_prohibited", "secure_storage_child_access_laws", 
+    "rejected_shoot_first_laws", "red_flag_laws", 
+    "background_check_or_purchase_permit", "concealed_carry_permit_required", 
+    "extreme_risk_law"
+]
+
+X = df[binary_predictors].copy()
+imputer = SimpleImputer(strategy='most_frequent')  
+X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
+
+scaler = StandardScaler()
+X_scaled = pd.DataFrame(scaler.fit_transform(X_imputed), columns=X_imputed.columns)
+
+pca_full = PCA()
+pca_full.fit(X_scaled)
+
+```
+
+```{python}
+
+plt.figure(figsize=(10, 6))
+plt.plot(np.arange(1, len(binary_predictors)+1), pca_full.explained_variance_ratio_, 'o-', linewidth=2)
+plt.plot(np.arange(1, len(binary_predictors)+1), np.cumsum(pca_full.explained_variance_ratio_), 's-', linewidth=2)
+plt.axhline(y=0.8, color='r', linestyle='--', alpha=0.5)  # 80% variance explained
+plt.grid(True, alpha=0.3)
+plt.xlabel('Number of Principal Components')
+plt.ylabel('Explained Variance Ratio')
+plt.title('Scree Plot with Cumulative Explained Variance')
+plt.legend(['Individual Explained Variance', 'Cumulative Explained Variance', '80% Variance Threshold'])
+plt.tight_layout()
+plt.show()
+
+```
+
+```{python}
+
+n_components_80 = np.where(np.cumsum(pca_full.explained_variance_ratio_) >= 0.8)[0][0] + 1
+print(f"Number of components needed to explain 80% of variance: {n_components_80}")
+
+pca = PCA(n_components=n_components_80)
+principal_components = pca.fit_transform(X_scaled)
+
+loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
+loading_matrix = pd.DataFrame(
+    loadings,
+    columns=[f'PC{i+1}' for i in range(n_components_80)],
+    index=binary_predictors
+)
+
+print("\nExplained variance ratio by component:")
+for i, var in enumerate(pca.explained_variance_ratio_):
+    print(f"PC{i+1}: {var:.4f} ({var*100:.2f}%)")
+print(f"Total variance explained: {sum(pca.explained_variance_ratio_):.4f} ({sum(pca.explained_variance_ratio_)*100:.2f}%)")
+
+```
+
+```{python}
+
+threshold = 0.25
+
+print("\nSignificant variable loadings by principal component:")
+for i in range(n_components_80):
+    pc_loadings = loading_matrix[f'PC{i+1}']
+    
+    pos_loadings = pc_loadings[pc_loadings > threshold].sort_values(ascending=False)
+    neg_loadings = pc_loadings[pc_loadings < -threshold].sort_values()
+    
+    print(f"\nPC{i+1} (Explains {pca.explained_variance_ratio_[i]*100:.2f}% of variance)")
+    
+    if not pos_loadings.empty:
+        print("  Positive loadings:")
+        for var, loading in pos_loadings.items():
+            print(f"    {var}: {loading:.3f}")
+    
+    if not neg_loadings.empty:
+        print("  Negative loadings:")
+        for var, loading in neg_loadings.items():
+            print(f"    {var}: {loading:.3f}")
+
+```
+
+```{python}
+
+dist_matrix = pdist(loading_matrix.iloc[:, :min(5, n_components_80)])
+linkage_matrix = linkage(dist_matrix, method='ward')
+
+plt.figure(figsize=(14, 8))
+dendrogram(
+    linkage_matrix,
+    labels=binary_predictors,
+    leaf_rotation=90,
+    leaf_font_size=8,
+)
+plt.title('Hierarchical Clustering of Gun Policy Variables Based on PCA Loadings')
+plt.xlabel('Variables')
+plt.ylabel('Distance')
+plt.axhline(y=5, color='r', linestyle='--', alpha=0.5)  # Suggested cut line for clusters
+plt.tight_layout()
+plt.show()
+
+```
+
+```{python}
+
+from scipy.cluster.hierarchy import fcluster
+
+# Cut the dendrogram tree to form clusters
+max_d = 5  # Distance threshold for cluster formation
+clusters = fcluster(linkage_matrix, max_d, criterion='distance')
+
+# Create a dictionary of variables by cluster
+clusters_dict = {}
+for i, cluster_id in enumerate(clusters):
+    if cluster_id not in clusters_dict:
+        clusters_dict[cluster_id] = []
+    clusters_dict[cluster_id].append(binary_predictors[i])
+
+# Print the clusters
+print("\nSuggested variable groupings based on hierarchical clustering:")
+for cluster_id, variables in clusters_dict.items():
+    print(f"\nGroup {cluster_id}:")
+    for var in variables:
+        print(f"  - {var}")
+
+```
+
+```{python}
+
+cluster_profiles = {}
+for cluster_id, variables in clusters_dict.items():
+    var_indices = [binary_predictors.index(var) for var in variables]
+    profile = loading_matrix.iloc[var_indices, :display_components].mean(axis=0)
+    cluster_profiles[cluster_id] = profile
+
+plt.figure(figsize=(12, 8))
+for cluster_id, profile in cluster_profiles.items():
+    plt.plot(range(1, display_components+1), profile, 'o-', linewidth=2, label=f'Group {cluster_id}')
+
+plt.xlabel('Principal Component')
+plt.ylabel('Average Loading')
+plt.title('Average Loading Profiles by Variable Group')
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.xticks(range(1, display_components+1))
+plt.tight_layout()
+plt.show()
+
+```
+
+## Data-Driven Gun Policy Groupings
+
+Based on the PCA results and hierarchical clustering dendrogram, here are the six natural policy groupings:
+
+### 1. Weapon and Purchase Restrictions
+- high_capacity_magazines_prohibited
+- asault_weapons_prohibited
+- background_check_or_purchase_permit
+- dealer_lisence_required
+- waiting_period
+- age_requirement
+
+**Evidence:** These variables cluster tightly in the dendrogram and show very strong positive loadings on PC1. Specifically, high-capacity magazine and assault weapon prohibitions (0.872 and 0.751 loadings) form a tight cluster, while background checks (0.872), dealer licensing (0.734), and waiting periods (0.633) group together consistently.
+
+### 2. Risk-Based Intervention
+- red_flag_laws
+- extreme_risk_law
+- gun_removal_program
+- rejected_shoot_first_laws
+
+**Evidence:** These variables have nearly identical loading patterns. Red flag laws and extreme risk laws have exactly the same loadings (0.868 on PC1, -0.339 on PC2), indicating they measure the same concept. Gun removal programs (0.677 on PC1, 0.429 on PC2) statistically complement these measures.
+
+### 3. Domestic Violence Prevention
+- prohibition_for_stalkers
+- prohibition_for_domestic_abusers
+- prohibition_for_convicted_domestic_abusers
+- abusers_turn_in_gun_after_conviction
+- restraining_order_prohibitor
+
+**Evidence:** These form a distinct cluster in the dendrogram. Domestic abuser prohibitions (0.643) and convicted domestic abuser prohibitions (0.635) have nearly identical PC1 loadings. They also share unique loading patterns on PC9 that distinguish them from other variables.
+
+### 4. High-Risk Individual Prohibitions
+- felony_prohibitor
+- fugitive_from_justice_prohibitor
+- mentaI_illness_prohibitor
+- hate_crime_prohibitor
+- no_purchase_after_violent_offense
+- mental_health_in_background_check
+
+**Evidence:** This group is defined by distinctive patterns across multiple components. Felony prohibitors show strong unique loadings on PC3 (0.679) and PC4 (0.498). The mental illness and fugitive prohibitors cluster together in the hierarchical analysis.
+
+### 5. Location-Based Restrictions
+- no_open_carry
+- concealed_carry_permit_required
+- no_guns_in_k_through_twelve_schools
+- no_guns_at_demonstrations
+- no_guns_on_college_campuses
+- bar_concealed_carry_by_people_with_violent_misdemeanors
+
+**Evidence:** These form a clear mid-section cluster in the dendrogram. Open carry restrictions (0.711) and concealed carry permit requirements (0.843) share strong PC1 loadings, while school, demonstration, and campus restrictions consistently group together.
+
+### 6. Safety Regulations
+- secure_storage_child_access_laws
+- funding_for_violence_intervention
+
+**Evidence:** Though smaller, these variables represent a distinct policy domain with unique loading patterns. Secure storage laws have distinctive loadings (0.757 on PC1, -0.311 on PC2), while funding for violence intervention shows unique patterns across multiple components (PC3, PC5, PC7, PC10).
+
+These groups provide a more granular and statistically sound basis for composite indices than broader categories, improving both the interpretability and likely predictive power of your model.
