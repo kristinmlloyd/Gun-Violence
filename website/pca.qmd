@@ -3,6 +3,7 @@ title: ""
 format: 
   html:
     code-fold: true
+    embed-resources: true
 jupyter: python3
 ---
 
