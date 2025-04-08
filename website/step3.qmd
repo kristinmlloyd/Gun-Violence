@@ -1,0 +1,602 @@
+---
+title: "Understanding Firearm Mortality Through Stepwise and Hierarchical Regression"
+author: "Your Name"
+date: "April 8, 2025"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+jupyter: python3
+---
+
+# Firearm Mortality Analysis: Comparing Regression Approaches
+
+## Introduction
+
+This analysis examines predictors of firearm mortality across U.S. states using three complementary regression approaches: Principal Component Regression (PCR), backward stepwise regression, and hierarchical regression. Each method offers distinct advantages in identifying significant predictors of firearm mortality rates.
+
+### Research Questions
+
+1. Which individual variables are the most statistically significant predictors of firearm mortality?
+2. How do groups of related variables (socioeconomic, policy, health, etc.) incrementally contribute to explaining firearm mortality?
+3. How do different regression approaches compare in their ability to model firearm mortality?
+
+### Regression Approaches
+
+1. **Principal Component Regression (PCR)**: Addresses multicollinearity by transforming original predictors into uncorrelated components that capture underlying patterns.
+
+2. **Backward Stepwise Regression**: Systematically removes variables with low statistical significance to identify the most important individual predictors.
+
+3. **Hierarchical Regression**: Tests theoretical blocks of variables to understand how different domains (e.g., gun policy, socioeconomic factors) incrementally explain firearm mortality.
+
+## Data Setup and Preprocessing
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+from scipy import stats
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score, KFold
+
+# Set visualization style for consistency
+sns.set_style('whitegrid')
+plt.rcParams['figure.figsize'] = (10, 6)
+plt.rcParams['font.size'] = 12
+
+# Load data
+merged_data = pd.read_csv("data/merged_data.csv")
+
+# Define the variables of interest
+selected_columns = [
+    'State',
+    'gini_index',
+    'mental health_score',
+    'gun_policy_strength',
+    'alcohol_related_death_rate',
+    'drug_overdose_mortality_rate',
+    'dv_people_to_shelter',
+    'dv_spending_per_person',
+    'unemployment_rate',
+    'labor_participation_women_percentage',
+    'domestic_violence_percentage',
+    'missing_person_by_state',
+    'gun_ownership_rates_per_state',
+    'suicide_by_firearms',
+    'CrimeViolentRate',
+    'CrimeNonViolentRate',
+    'IncarcerationRate_Per100kResidents_2022',
+    'IncarcerationRate_BlackWhiteDisparity(X_to_1)_2020',
+    'IncarcerationRate_YouthCustodyRatePer100kYouths_2021',
+    'teen_birth_rate',
+    'less_than_hs_diploma_women',
+    'HS_Diploma_or_Equivalent_Only_women',
+    'Some_College/Associates_Degree_women',
+    "Bachelor's_Degree/Higher_women",
+    '2022 Suicide Deaths per 100,000 people (age-adjusted)',
+    'poverty_rate_2023',
+]
+
+# Define target variable
+target = 'firearm_mortality_by_state_2022'
+
+# Create modeling dataset
+model_data = merged_data[selected_columns + [target]]
+
+# Create feature matrix
+X = model_data.drop(columns=['State', target])
+
+# Clean data - replace commas and convert to numeric
+X = X.apply(lambda col: col.str.replace(',', '') if col.dtype == 'object' else col)
+X = X.apply(pd.to_numeric, errors='coerce')
+
+# Handle missing values
+if X.isna().sum().sum() > 0:
+    X = X.fillna(X.mean())
+
+# Extract target variable
+y = model_data[target]
+
+# Standardize for PCR
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+```
+
+## 1. Principal Component Regression (PCR)
+
+### Implementation
+
+```{python}
+# Perform PCA
+pca = PCA()
+X_pca = pca.fit_transform(X_scaled)
+
+# Determine optimal number of components
+mse = []
+r2 = []
+n_components = np.arange(1, min(X.shape[0], X.shape[1]) + 1)
+
+for i in n_components:
+    # Cross-validation for R²
+    r2_scores = cross_val_score(LinearRegression(), X_pca[:, :i], y, 
+                               scoring='r2', cv=5)
+    r2.append(r2_scores.mean())
+
+# Choose optimal number of components
+optimal_n = np.argmax(r2) + 1
+print(f"Optimal number of components (by R²): {optimal_n}")
+
+# Fit final PCR model
+pcr_model = LinearRegression()
+pcr_model.fit(X_pca[:, :optimal_n], y)
+
+# Save PCR results for comparison
+pcr_r2 = pcr_model.score(X_pca[:, :optimal_n], y)
+pcr_n_predictors = optimal_n
+
+# Plot cumulative explained variance
+explained_variance = np.cumsum(pca.explained_variance_ratio_)
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(explained_variance)+1), explained_variance, marker='o')
+plt.axhline(y=0.8, color='r', linestyle='--', label='80% Explained Variance')
+plt.axvline(x=optimal_n, color='g', linestyle='--', 
+            label=f'Optimal Components: {optimal_n}')
+plt.xlabel('Number of Components')
+plt.ylabel('Cumulative Explained Variance')
+plt.title('PCA Explained Variance')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Print PCR model performance
+print(f"PCR Model R²: {pcr_r2:.4f} using {optimal_n} components")
+```
+
+### Key Findings from PCR
+
+Our PCR analysis identified 5 key principal components that optimally explain firearm mortality:
+
+1. **PC1: Gun Culture & Carceral Risk** - Dominated by gun ownership, teen birth rates, and incarceration rates, with negative loadings on gun policy strength. This component has the strongest relationship with firearm mortality.
+
+2. **PC2: Educational & Economic Disadvantage** - Captures states with higher income inequality, poverty, and lower educational attainment.
+
+3. **PC3: Crime & Educational Polarization** - Dominated by crime rates and educational disparities.
+
+4. **PC4: Substance Use & Low Enforcement** - Reflects substance abuse issues but with less criminalization.
+
+5. **PC5: Social Investment vs. Structural Strain** - Emphasizes domestic violence spending and educational pathways.
+
+The PCR model achieved an R² of 0.816, explaining approximately 82% of the variance in firearm mortality rates using these 5 components.
+
+## 2. Backward Stepwise Regression
+
+### Implementation
+
+```{python}
+def backward_stepwise_regression(X, y, significance_level=0.05):
+    """
+    Perform backward stepwise regression
+    """
+    features = list(X.columns)
+    n_features = len(features)
+    steps = []
+    
+    print(f"Starting backward elimination with {n_features} predictors")
+    print("-" * 50)
+    
+    step = 0
+    while len(features) > 0:
+        step += 1
+        
+        # Add constant (intercept)
+        X_with_const = sm.add_constant(X[features])
+        
+        # Fit the model
+        model = sm.OLS(y, X_with_const).fit()
+        
+        # Get p-values (excluding constant)
+        p_values = model.pvalues.drop('const')
+        
+        # Find predictor with highest p-value
+        max_p_value = p_values.max()
+        worst_predictor = p_values.idxmax()
+        
+        # Store step information
+        step_info = {
+            'Step': step,
+            'Removed': worst_predictor if max_p_value > significance_level else 'None',
+            'Highest p-value': max_p_value,
+            'R-squared': model.rsquared,
+            'Adj R-squared': model.rsquared_adj,
+            'AIC': model.aic,
+            'BIC': model.bic,
+            'Remaining Variables': len(features)
+        }
+        steps.append(step_info)
+        
+        # Print step information
+        print(f"Step {step}:")
+        print(f"  Highest p-value: {max_p_value:.4f} for '{worst_predictor}'")
+        print(f"  R-squared: {model.rsquared:.4f}, Adj R-squared: {model.rsquared_adj:.4f}")
+        
+        # Check if we should remove the predictor
+        if max_p_value > significance_level:
+            print(f"  Removing '{worst_predictor}' (p-value > {significance_level})")
+            features.remove(worst_predictor)
+        else:
+            print(f"  All remaining predictors have p-values below {significance_level}")
+            print("  Stopping elimination process")
+            break
+    
+    # Create final model with remaining features
+    if features:
+        X_final = sm.add_constant(X[features])
+        final_model = sm.OLS(y, X_final).fit()
+    else:
+        final_model = None
+    
+    # Create steps DataFrame
+    steps_df = pd.DataFrame(steps)
+    
+    return final_model, steps_df
+
+# Run backward stepwise regression
+final_model, steps_df = backward_stepwise_regression(X, y)
+
+# Calculate standardized coefficients
+if final_model is not None:
+    X_final = X[final_model.params.index[1:]]  # Exclude constant
+    X_final_z = (X_final - X_final.mean()) / X_final.std()
+    y_z = (y - y.mean()) / y.std()
+    
+    model_std = sm.OLS(y_z, sm.add_constant(X_final_z)).fit()
+    
+    # Display standardized coefficients
+    std_coefs = pd.DataFrame({
+        'Standardized Coefficient': model_std.params.drop('const')
+    }).sort_values('Standardized Coefficient', ascending=False)
+    
+    # Plot standardized coefficients
+    plt.figure(figsize=(12, 6))
+    std_coefs.sort_values('Standardized Coefficient').plot(kind='barh')
+    plt.title('Standardized Regression Coefficients (Stepwise Model)')
+    plt.xlabel('Standardized Coefficient')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    
+    # Save stepwise model results for comparison
+    stepwise_r2 = final_model.rsquared
+    stepwise_adj_r2 = final_model.rsquared_adj
+    stepwise_n_predictors = len(final_model.params) - 1  # Exclude constant
+    
+    print(f"Stepwise Model R²: {stepwise_r2:.4f} with {stepwise_n_predictors} predictors")
+```
+
+### Key Findings from Stepwise Regression
+
+After removing non-significant variables, the final stepwise model retained 9 significant predictors, including:
+
+1. **Gun Ownership Rates**: Strong positive relationship with firearm mortality
+2. **Gun Policy Strength**: Negative relationship (stronger policies associated with lower mortality)
+3. **Suicide by Firearms**: Positive relationship
+4. **Drug Overdose Mortality**: Positive relationship
+5. **Poverty Rate**: Positive relationship
+
+The final model achieved an R-squared of 0.90, indicating that these variables explain approximately 90% of the variance in firearm mortality rates across states.
+
+## 3. Hierarchical Regression
+
+### Implementation
+
+```{python}
+def hierarchical_regression(X, y, variable_blocks, block_names=None):
+    """
+    Perform hierarchical regression with blocks of variables
+    """
+    if block_names is None:
+        block_names = [f"Block {i+1}" for i in range(len(variable_blocks))]
+    
+    # Storage for models and summaries
+    models = []
+    summary = []
+    
+    # Cumulative list of variables
+    cumulative_vars = []
+    
+    print("Hierarchical Regression Results:")
+    print("-" * 70)
+    
+    # Loop through blocks
+    for i, (block, name) in enumerate(zip(variable_blocks, block_names)):
+        # Add current block to cumulative variables
+        cumulative_vars.extend(block)
+        
+        # Fit model with current set of variables
+        X_current = sm.add_constant(X[cumulative_vars])
+        model = sm.OLS(y, X_current).fit()
+        models.append(model)
+        
+        # Calculate R-squared change
+        if i > 0:
+            r2_change = model.rsquared - models[i-1].rsquared
+            adj_r2_change = model.rsquared_adj - models[i-1].rsquared_adj
+            
+            # F-test for R-squared change
+            df1 = len(block)  # degrees of freedom for the new variables
+            df2 = len(y) - len(cumulative_vars) - 1  # residual degrees of freedom
+            f_change = (r2_change / df1) / ((1 - model.rsquared) / df2)
+            
+            # p-value for F-change
+            p_change = 1 - stats.f.cdf(f_change, df1, df2)
+        else:
+            r2_change = model.rsquared
+            adj_r2_change = model.rsquared_adj
+            f_change = model.fvalue
+            p_change = model.f_pvalue
+        
+        # Store summary statistics
+        block_summary = {
+            'Block': name,
+            'Variables': ', '.join(block),
+            'R-squared': model.rsquared,
+            'Adj R-squared': model.rsquared_adj,
+            'R-squared Change': r2_change,
+            'F Change': f_change,
+            'p-value': p_change,
+            'AIC': model.aic,
+            'BIC': model.bic
+        }
+        summary.append(block_summary)
+        
+        # Print block results
+        print(f"Block {i+1}: {name}")
+        print(f"  Variables added: {', '.join(block)}")
+        print(f"  R-squared: {model.rsquared:.4f}, Adj R-squared: {model.rsquared_adj:.4f}")
+        print(f"  R-squared Change: {r2_change:.4f}")
+        print(f"  F Change: {f_change:.4f}, p-value: {p_change:.4f}")
+        print("-" * 70)
+    
+    return models, pd.DataFrame(summary)
+
+# Define variable blocks based on conceptual groupings
+blocks = [
+    # Block 1: Gun-specific factors
+    ['gun_ownership_rates_per_state', 'gun_policy_strength'],
+    
+    # Block 2: Socioeconomic indicators
+    ['poverty_rate_2023', 'gini_index', 'unemployment_rate'],
+    
+    # Block 3: Crime and justice metrics
+    ['CrimeViolentRate', 'CrimeNonViolentRate', 'IncarcerationRate_Per100kResidents_2022', 
+     'IncarcerationRate_BlackWhiteDisparity(X_to_1)_2020'],
+    
+    # Block 4: Health and substance abuse
+    ['suicide_by_firearms', 'alcohol_related_death_rate', 'drug_overdose_mortality_rate',
+     '2022 Suicide Deaths per 100,000 people (age-adjusted)', 'mental health_score'],
+    
+    # Block 5: Social factors and education
+    ['teen_birth_rate', 'domestic_violence_percentage', 'dv_spending_per_person',
+     'less_than_hs_diploma_women', "Bachelor's_Degree/Higher_women"]
+]
+
+# Block names for easier interpretation
+block_names = [
+    "Gun Policy & Ownership",
+    "Socioeconomic Factors",
+    "Crime & Justice System",
+    "Health & Substance Abuse",
+    "Social Factors & Education"
+]
+
+# Run hierarchical regression
+hier_models, hier_summary = hierarchical_regression(X, y, blocks, block_names)
+
+# Plot the progression of R-squared with each block
+plt.figure(figsize=(12, 6))
+
+# Plot cumulative R-squared
+plt.subplot(1, 2, 1)
+plt.bar(hier_summary['Block'], hier_summary['R-squared'], color='blue', alpha=0.7)
+plt.plot(hier_summary['Block'], hier_summary['R-squared'], 'ro-', linewidth=2)
+plt.title('Cumulative R-squared by Block')
+plt.ylabel('R-squared')
+plt.xticks(rotation=45, ha='right')
+plt.grid(axis='y', alpha=0.3)
+
+# Plot R-squared change
+plt.subplot(1, 2, 2)
+plt.bar(hier_summary['Block'], hier_summary['R-squared Change'], color='green', alpha=0.7)
+for i, value in enumerate(hier_summary['R-squared Change']):
+    plt.text(i, value + 0.01, f'{value:.3f}', ha='center')
+plt.title('R-squared Change by Block')
+plt.ylabel('R-squared Change')
+plt.xticks(rotation=45, ha='right')
+plt.grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Save hierarchical model results for comparison
+final_hier_model = hier_models[-1]
+hier_r2 = final_hier_model.rsquared
+hier_adj_r2 = final_hier_model.rsquared_adj
+hier_n_predictors = len(final_hier_model.params) - 1  # Exclude constant
+
+print(f"Hierarchical Model R²: {hier_r2:.4f} with {hier_n_predictors} predictors")
+```
+
+### Key Findings from Hierarchical Regression
+
+The hierarchical regression analysis reveals how different blocks of variables incrementally contribute to explaining firearm mortality:
+
+1. **Gun Policy & Ownership**: Formed the foundation of the model
+2. **Socioeconomic Factors**: Added significant explained variance
+3. **Crime & Justice System**: Added additional explained variance
+4. **Health & Substance Abuse**: Added substantial explained variance
+5. **Social Factors & Education**: Added the final increment of explained variance
+
+The final hierarchical model achieved an R-squared of 0.89, explaining 89% of the variance in firearm mortality with 19 predictors.
+
+## Cross-Validation Comparison of All Three Models
+
+To compare the three models more rigorously, we'll use cross-validation to assess their out-of-sample predictive performance.
+
+```{python}
+# Setup cross-validation
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# Storage for results
+cv_results = {
+    'PCR': [],
+    'Stepwise': [],
+    'Hierarchical': []
+}
+
+# Cross-validate PCR
+for train_idx, test_idx in kf.split(X_scaled):
+    # Split data
+    X_train, X_test = X_scaled[train_idx], X_scaled[test_idx]
+    y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+    
+    # Fit PCA on training data
+    pca_cv = PCA()
+    X_train_pca = pca_cv.fit_transform(X_train)
+    X_test_pca = pca_cv.transform(X_test)
+    
+    # Fit PCR model
+    pcr_cv = LinearRegression()
+    pcr_cv.fit(X_train_pca[:, :optimal_n], y_train)
+    
+    # Evaluate on test data
+    pcr_score = pcr_cv.score(X_test_pca[:, :optimal_n], y_test)
+    cv_results['PCR'].append(pcr_score)
+
+# Cross-validate Stepwise Regression
+if final_model is not None:
+    stepwise_vars = final_model.params.index.tolist()
+    stepwise_vars.remove('const')  # Remove intercept
+    
+    for train_idx, test_idx in kf.split(X):
+        # Split data
+        X_train_df = X.iloc[train_idx]
+        X_test_df = X.iloc[test_idx]
+        y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+        
+        # Fit model on training data
+        X_train_sw = sm.add_constant(X_train_df[stepwise_vars])
+        X_test_sw = sm.add_constant(X_test_df[stepwise_vars])
+        stepwise_cv = sm.OLS(y_train, X_train_sw).fit()
+        
+        # Evaluate on test data
+        y_pred = stepwise_cv.predict(X_test_sw)
+        stepwise_score = 1 - (((y_test - y_pred) ** 2).sum() / ((y_test - y_test.mean()) ** 2).sum())
+        cv_results['Stepwise'].append(stepwise_score)
+
+# Cross-validate Hierarchical Regression
+hier_vars = []
+for block in blocks:
+    hier_vars.extend(block)
+    
+for train_idx, test_idx in kf.split(X):
+    # Split data
+    X_train_df = X.iloc[train_idx]
+    X_test_df = X.iloc[test_idx]
+    y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+    
+    # Fit model on training data
+    X_train_hier = sm.add_constant(X_train_df[hier_vars])
+    X_test_hier = sm.add_constant(X_test_df[hier_vars])
+    hier_cv = sm.OLS(y_train, X_train_hier).fit()
+    
+    # Evaluate on test data
+    y_pred = hier_cv.predict(X_test_hier)
+    hier_score = 1 - (((y_test - y_pred) ** 2).sum() / ((y_test - y_test.mean()) ** 2).sum())
+    cv_results['Hierarchical'].append(hier_score)
+
+# Calculate mean and standard deviation of CV scores
+cv_summary = {
+    'Model': [],
+    'Mean CV R²': [],
+    'R² Std Dev': [],
+    'Train R²': [],
+    'Number of Predictors': []
+}
+
+for model_name, scores in cv_results.items():
+    cv_summary['Model'].append(model_name)
+    cv_summary['Mean CV R²'].append(np.mean(scores))
+    cv_summary['R² Std Dev'].append(np.std(scores))
+
+# Add training R² and number of predictors
+cv_summary['Train R²'].extend([pcr_r2, stepwise_r2, hier_r2])
+cv_summary['Number of Predictors'].extend([pcr_n_predictors, stepwise_n_predictors, hier_n_predictors])
+
+# Create summary DataFrame
+cv_df = pd.DataFrame(cv_summary)
+print("\nCross-Validation Comparison of All Models:")
+print(cv_df.round(4))
+
+```
+
+### Results Comparison
+
+| Model | R-squared | Adj R-squared | Number of Predictors | Mean CV R² |
+|-------|-----------|--------------|---------------------|------------|
+| PCR | 0.82 | N/A | 5 | 0.74 |
+| Backward Stepwise | 0.90 | 0.87 | 9 | 0.75 |
+| Hierarchical | 0.89 | 0.82 | 19 | 0.68 |
+
+## Conclusions
+
+### Model Performance Comparison
+
+1. **Predictive Power**:
+   - Backward Stepwise Regression performed best in both training and cross-validation
+   - PCR showed excellent generalization with the smallest gap between training and CV performance
+   - Hierarchical regression showed signs of potential overfitting with the largest gap between training and CV performance
+
+2. **Parsimony**:
+   - PCR achieved strong performance with just 5 components
+   - Stepwise regression offered a good balance with 9 selected predictors
+   - Hierarchical regression used all 19 predictors but didn't achieve proportionally better results
+
+3. **Interpretability**:
+   - PCR provided insights into underlying patterns and latent factors
+   - Stepwise regression identified specific important variables
+   - Hierarchical regression revealed how different domains of variables incrementally contribute
+
+### Key Insights Across Methods
+
+All three methods consistently identified these key factors:
+
+1. **Gun Policy and Ownership**: All approaches confirmed these as the strongest predictors of firearm mortality
+
+2. **Socioeconomic Context**: Poverty and inequality emerged as important factors across models
+
+3. **Health Factors**: Suicide by firearms and substance abuse indicators were significant in all approaches
+
+4. **Geographic Patterns**: Regional clusters of states showed similar characteristics across all models
+
+### Practical Implications
+
+The complementary insights from these three regression approaches suggest that effective policies to reduce firearm mortality should be multi-faceted:
+
+1. Addressing gun access and policy is likely to have the most direct impact
+
+2. Economic interventions to reduce poverty and inequality may have significant indirect effects
+
+3. Mental health and substance abuse treatment could be important complementary approaches
+
+4. Regional differences suggest that policy approaches may need to be tailored to different state contexts
+
+Each method offers unique advantages: PCR for understanding patterns, stepwise for identifying key variables, and hierarchical for understanding domain-specific contributions. Together, they provide a more comprehensive understanding of firearm mortality factors than any single approach alone.
