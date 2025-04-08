@@ -1,0 +1,546 @@
+---
+title: "Understanding Firearm Mortality Through Principal Component Regression"
+author: "Your Name"
+date: "April 8, 2025"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+jupyter: python3
+---
+
+## Introduction
+
+This analysis examines the relationship between socioeconomic, policy, and public health factors and firearm mortality rates across U.S. states. Firearm mortality represents a complex public health challenge that likely stems from multiple interacting factors rather than simple, direct causes. Using Principal Component Regression (PCR), we can reduce a complex set of 27 predictors into meaningful latent factors to understand what drives differences in firearm mortality.
+
+### Why Principal Component Regression?
+
+Traditional regression approaches face challenges when analyzing firearm mortality:
+
+1. **Multicollinearity**: Many potential predictors (like poverty, education, and crime) are strongly correlated with each other, making it difficult to isolate their individual effects.
+
+2. **Dimensionality**: With 27 potential predictors and limited observations (50 states), we risk overfitting with standard regression approaches.
+
+3. **Latent Patterns**: The underlying drivers of firearm mortality may be broader societal patterns rather than individual variables.
+
+Principal Component Regression addresses these challenges by:
+
+1. First using Principal Component Analysis (PCA) to reduce our 27 predictors to uncorrelated components that capture underlying patterns
+2. Then using these components as predictors in a regression model of firearm mortality
+
+This approach allows us to identify the key patterns that drive variations in firearm mortality across states, while avoiding the statistical problems of traditional regression.
+
+```{python}
+#| label: setup
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score
+
+# Set visualization style for consistency
+sns.set_style('whitegrid')
+plt.rcParams['figure.figsize'] = (10, 6)
+plt.rcParams['font.size'] = 12
+```
+
+## Data & Preprocessing
+
+Our dataset contains state-level information on 27 potential predictors of firearm mortality, including socioeconomic indicators, crime rates, gun policies, educational attainment, and health metrics.
+
+```{python}
+#| label: data-loading
+
+# Load data
+merged_data = pd.read_csv("data/merged_data.csv")
+
+# Define the variables of interest
+selected_columns = [
+    'State',
+    'gini_index',
+    'mental health_score',
+    'gun_policy_strength',
+    'alcohol_related_death_rate',
+    'drug_overdose_mortality_rate',
+    'dv_people_to_shelter',
+    'dv_spending_per_person',
+    'unemployment_rate',
+    'labor_participation_women_percentage',
+    'domestic_violence_percentage',
+    'missing_person_by_state',
+    'gun_ownership_rates_per_state',
+    'suicide_by_firearms',
+    'CrimeViolentRate',
+    'CrimeNonViolentRate',
+    'IncarcerationRate_Per100kResidents_2022',
+    'IncarcerationRate_BlackWhiteDisparity(X_to_1)_2020',
+    'IncarcerationRate_YouthCustodyRatePer100kYouths_2021',
+    'teen_birth_rate',
+    'less_than_hs_diploma_women',
+    'HS_Diploma_or_Equivalent_Only_women',
+    'Some_College/Associates_Degree_women',
+    "Bachelor's_Degree/Higher_women",
+    '2022 Suicide Deaths per 100,000 people (age-adjusted)',
+    'poverty_rate_2023',
+]
+
+# Define target variable
+target = 'firearm_mortality_by_state_2022'
+
+# Create modeling dataset
+model_data = merged_data[selected_columns + [target]]
+
+# Basic information about the dataset
+print(f"Dataset dimensions: {model_data.shape}")
+print(f"Number of states: {model_data['State'].nunique()}")
+
+# Data preprocessing
+# Create feature matrix
+X = model_data.drop(columns=['State', target])
+
+# Clean data - replace commas and convert to numeric
+X = X.apply(lambda col: col.str.replace(',', '') if col.dtype == 'object' else col)
+X = X.apply(pd.to_numeric, errors='coerce')
+
+# Handle missing values
+missing_count = X.isna().sum().sum()
+if missing_count > 0:
+    print(f"Handling {missing_count} missing values with mean imputation")
+    X = X.fillna(X.mean())
+
+# Extract target variable
+y = model_data[target]
+
+# Standardize predictors (essential for PCA)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Print target summary statistics
+print("\nFirearm Mortality Rate Summary Statistics:")
+print(y.describe().round(2))
+```
+
+## Key Findings
+
+### 1. Five Key Components Explain Most Variation
+
+Our analysis identifies five principal components that optimally predict firearm mortality rates, accounting for approximately 70% of the variance in the original predictors and achieving an R² of 0.816 in explaining firearm mortality rates.
+
+```{python}
+#| label: component-variance
+#| fig-cap: "Explained variance by principal components"
+
+# Perform PCA
+pca = PCA()
+X_pca = pca.fit_transform(X_scaled)
+
+# Visualize explained variance
+fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+
+# Individual variance
+ax[0].bar(range(1, 11), pca.explained_variance_ratio_[:10])
+ax[0].set_xlabel('Principal Component')
+ax[0].set_ylabel('Explained Variance Ratio')
+ax[0].set_title('Variance Explained by Each Component')
+ax[0].set_xticks(range(1, 11))
+
+# Cumulative variance
+cumulative = np.cumsum(pca.explained_variance_ratio_)
+ax[1].plot(range(1, len(cumulative)+1), cumulative, marker='o')
+ax[1].set_xlabel('Number of Components')
+ax[1].set_ylabel('Cumulative Explained Variance')
+ax[1].set_title('Cumulative Explained Variance')
+ax[1].axhline(y=0.8, color='r', linestyle='--', label='80% Variance')
+ax[1].axhline(y=0.9, color='g', linestyle='--', label='90% Variance')
+ax[1].set_xticks(range(1, 11))
+ax[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+### Principal Component Interpretations 
+
+```{python}
+#| label: top-loadings
+#| fig-cap: "Top 5 variable loadings for PC1 to PC5"
+
+# Create DataFrame of component loadings
+component_df = pd.DataFrame(
+    pca.components_.T[:, :5],
+    columns=[f'PC{i+1}' for i in range(5)],
+    index=X.columns
+)
+
+# Print top 5 variables in each of the first 5 components
+for pc in component_df.columns:
+    print(f"\nTop 5 variables in {pc}:")
+    top_vars = component_df[pc].abs().sort_values(ascending=False).head(5)
+    for var in top_vars.index:
+        loading = component_df.loc[var, pc]
+        sign = "+" if loading > 0 else "-"
+        print(f"  {var}: {sign}{abs(loading):.4f}")
+```
+
+**PC1: Gun Culture & Carceral Risk**
+This component is driven by high levels of gun ownership, teen birth rates, suicide by firearms, and incarceration rates. It also includes negative loadings on gun policy strength and college education. This suggests states with widespread gun access and weaker regulations, where carceral systems and risky youth environments are more pronounced.
+
+**PC2: Educational & Economic Disadvantage**
+This component captures states with higher levels of income inequality, poverty, unemployment, and low education levels, particularly for women. It also correlates with increased shelter demand, suggesting a strong pattern of structural disadvantage.
+
+**PC3: Crime & Educational Polarization**
+This component is dominated by violent and nonviolent crime rates, and an educational divide: lower high school completion but higher college attainment. It likely represents urbanized states with both high crime exposure and bifurcated educational access.
+
+**PC4: Substance Use & Low Enforcement**
+This dimension captures substance abuse (e.g., drug overdose, alcohol-related deaths) and missing persons, but correlates negatively with crime and incarceration rates. These may be areas where addiction problems are prevalent but less criminalized or policed.
+
+**PC5: Social Investment vs. Structural Strain**
+This component emphasizes domestic violence spending, lower unemployment, and a unique educational mix (more high school diplomas, fewer with some college). It may reflect states with proactive social service investment amid uneven educational pathways.
+
+Principal Component 1 overwhelmingly correlates with firearm mortality (r = 0.878) and has the largest regression coefficient (1.97). This component represents pattern characterized by high gun ownership, teen birth rates, suicide by firearms, and weaker gun policies.
+
+### 3. Understanding All Five Principal Components
+
+Each of our five components represents a coherent factor that contributes to firearm mortality patterns across states.
+
+```{python}
+#| label: all-components
+#| fig-cap: "Loadings for all five principal components"
+
+# Correlation with target
+component_corr = pd.DataFrame(X_pca[:, :5], columns=[f'PC{i+1}' for i in range(5)])
+component_corr['Target'] = y
+correlation = component_corr.corr()['Target'].drop('Target')
+
+# Plot correlation with target
+plt.figure(figsize=(10, 6))
+correlation.sort_values().plot(kind='barh')
+plt.title('Correlation between Principal Components and Firearm Mortality')
+plt.xlabel('Correlation Coefficient')
+plt.grid(True, alpha=0.3)
+plt.axvline(x=0, color='k', linestyle='--', alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+```
+
+**PC1: Rural-Conservative Pattern**
+
+This component captures a constellation of factors typically associated with rural and more politically conservative states. It is characterized by high positive loadings on gun ownership, teen birth rates, suicide by firearms, and incarceration rates, along with a strong negative loading on gun policy strength—meaning states with less restrictive gun laws have higher PC1 scores. These variables together represent regions with high firearm prevalence, limited gun regulation, elevated teen pregnancy, and greater incarceration—features often seen in rural, conservative-leaning areas. This component is strongly correlated with firearm mortality (r = 0.878), making it the dominant predictor in the model.
+
+**PC2: Socioeconomic Inequality Pattern**
+
+This component reflects socioeconomic disadvantage and inequality. It shows high positive loadings on factors like less than high school education for women, the Gini index (a measure of income inequality), domestic violence shelter demand, and poverty rates. It also includes a negative loading on suicide death rates. Overall, PC2 represents areas with lower educational attainment, higher economic disparity, and greater need for domestic violence resources. However, its weak correlation with firearm mortality (r = 0.048) suggests these conditions have less direct influence on firearm deaths when accounting for other components.
+
+**PC3: Crime and Education Polarization**
+
+PC3 primarily captures patterns in crime and educational distribution. It includes strong positive loadings on overall, violent, and non-violent crime rates, alongside a negative loading for high school education and a positive one for college education. This reflects regions with high crime and an educational split—fewer individuals with only a high school diploma and more at both extremes of the education spectrum. The moderate correlation with firearm mortality (r = 0.142) suggests that while crime plays a role, it is not the dominant factor.
+
+**PC4: Substance Abuse and Social Disorder**
+
+This component is driven by indicators of substance abuse and related societal issues. It shows strong positive loadings on drug overdose mortality and alcohol-related deaths, as well as missing person reports. Interestingly, it has negative loadings on crime rates, suggesting that substance abuse in these areas does not necessarily correlate with higher crime. The slightly negative correlation with firearm mortality (r = -0.071) implies that, when other factors are accounted for, substance abuse may be associated with lower—not higher—rates of firearm deaths, which is somewhat counterintuitive.
+
+**PC5: Social Services and Employment Structure**
+
+This final key component reflects social infrastructure and employment/education dynamics. It has a strong positive loading on domestic violence spending per person and a negative loading on unemployment rate. Education variables show a mixed pattern, with negative loading for some college/associate’s degrees and a positive one for high school diplomas only. PC5 likely represents regions with stronger domestic violence services, lower unemployment, and divergent educational paths. Its moderate correlation with firearm mortality (r = 0.131), paired with a relatively large regression coefficient (0.669), indicates that this is an important secondary factor in explaining firearm deaths.
+
+### 4. States Form Distinct Geographical Clusters
+
+States cluster in meaningful patterns along the first two principal components, with a striking left-to-right gradient of increasing firearm mortality.
+
+```{python}
+#| label: state-clusters
+#| fig-cap: "States positioned by principal components with firearm mortality rates"
+
+# Create a scatter plot of states using the top 2 principal components
+states_pca = pd.DataFrame({
+    'State': model_data['State'],
+    'PC1': X_pca[:, 0],
+    'PC2': X_pca[:, 1],
+    'Firearm_Mortality': y
+})
+
+plt.figure(figsize=(14, 10))
+scatter = plt.scatter(states_pca['PC1'], states_pca['PC2'], 
+                     c=states_pca['Firearm_Mortality'], 
+                     cmap='RdYlBu_r', s=100, alpha=0.8)
+
+# Add state labels
+for i, row in states_pca.iterrows():
+    plt.annotate(row['State'], (row['PC1'], row['PC2']), 
+                fontsize=9, alpha=0.7)
+
+plt.colorbar(scatter, label='Firearm Mortality Rate')
+plt.xlabel(f'PC1 - Rural-Conservative Pattern ({pca.explained_variance_ratio_[0]:.1%} variance)')
+plt.ylabel(f'PC2 - Socioeconomic Inequality ({pca.explained_variance_ratio_[1]:.1%} variance)')
+plt.title('States Positioned by First Two Principal Components')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Identify regional clusters
+northeast = ['Massachusetts', 'Rhode Island', 'Connecticut', 'New York', 'New Jersey', 'Vermont', 'New Hampshire', 'Maine']
+south = ['Mississippi', 'Louisiana', 'Alabama', 'Arkansas', 'Tennessee', 'South Carolina', 'Georgia', 'North Carolina', 'Kentucky']
+west = ['California', 'Washington', 'Oregon', 'Colorado', 'Hawaii', 'Nevada', 'New Mexico', 'Arizona']
+
+print("\nRegional PC1 averages:")
+ne_states = states_pca[states_pca['State'].isin(northeast)]
+south_states = states_pca[states_pca['State'].isin(south)]
+west_states = states_pca[states_pca['State'].isin(west)]
+
+print(f"Northeast states average PC1: {ne_states['PC1'].mean():.4f}")
+print(f"Southern states average PC1: {south_states['PC1'].mean():.4f}")
+print(f"Western states average PC1: {west_states['PC1'].mean():.4f}")
+```
+
+PC1 (x-axis):
+Labeled PC1 Pattern, explains 29.1% of variance. States on the right have higher gun ownership, teen birth rates, incarceration, etc.
+
+PC2 (y-axis):
+Labeled Socioeconomic Inequality, explains 18.7% of variance. States higher up tend to have greater income inequality, poverty, and educational disadvantage.
+
+Color:
+Represents firearm mortality rate — dark red means high, blue means low.
+
+### 5. Key Predictors of Firearm Mortality
+
+When combining the PCA loadings with regression coefficients, we can identify the most important individual predictors of firearm mortality.
+
+```{python}
+#| label: model-performance
+#| fig-cap: "Model selection via cross-validation"
+
+# Cross-validation to determine optimal number of components
+mse = []
+r2 = []
+n_components = np.arange(1, min(X.shape[0], X.shape[1]) + 1)
+
+for i in n_components:
+    # Cross-validation for MSE
+    mse_scores = cross_val_score(LinearRegression(), X_pca[:, :i], y, 
+                                 scoring='neg_mean_squared_error', cv=5)
+    mse.append(-mse_scores.mean())
+    
+    # Cross-validation for R²
+    r2_scores = cross_val_score(LinearRegression(), X_pca[:, :i], y, 
+                               scoring='r2', cv=5)
+    r2.append(r2_scores.mean())
+
+# Plot CV results
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# MSE plot
+axes[0].plot(n_components[:20], mse[:20], marker='o')  # Show only first 20 for clarity
+axes[0].set_xlabel('Number of Principal Components')
+axes[0].set_ylabel('Cross-Validated MSE')
+axes[0].set_title('PCR Model Selection (MSE)')
+optimal_n_mse = np.argmin(mse) + 1
+axes[0].axvline(x=optimal_n_mse, color='r', linestyle='--', 
+                label=f'Optimal: {optimal_n_mse}')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# R² plot
+axes[1].plot(n_components[:20], r2[:20], marker='o')  # Show only first 20 for clarity
+axes[1].set_xlabel('Number of Principal Components')
+axes[1].set_ylabel('Cross-Validated R²')
+axes[1].set_title('PCR Model Selection (R²)')
+optimal_n_r2 = np.argmax(r2) + 1
+axes[1].axvline(x=optimal_n_r2, color='r', linestyle='--', 
+                label=f'Optimal: {optimal_n_r2}')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Choose optimal number of components
+optimal_n = optimal_n_mse  # Using MSE-based optimization
+print(f"Optimal number of components (by MSE): {optimal_n_mse}")
+print(f"Optimal number of components (by R²): {optimal_n_r2}")
+
+# Fit final model
+final_model = LinearRegression()
+final_model.fit(X_pca[:, :optimal_n], y)
+
+# Print model performance
+print(f"R² on training data: {final_model.score(X_pca[:, :optimal_n], y):.3f}")
+
+# Print coefficients
+print("\nPCR Model Coefficients for Principal Components:")
+for i, coef in enumerate(final_model.coef_[:optimal_n]):
+    print(f"PC{i+1}: {coef:.6f}")
+```
+
+Model explains 81.6% of the variance in firearm mortality across states — very strong predictive performance.
+
+| Component | Interpretation | Coefficient | Influence |
+|-----------|----------------|-------------|-----------|
+| **PC1** | Cultural Conservatism & Gun Access | **+1.97** | Dominant driver |
+| **PC2** | Socioeconomic Inequality | +0.13 | Weak influence |
+| **PC3** | Crime & Educational Polarization | +0.50 | Moderate role |
+| **PC4** | Substance Abuse & Social Disruption | **–0.32** | Inverse effect |
+| **PC5** | Social Services & Employment Structure | +0.67 | Strong secondary |
+
+```{python}
+#| label: feature-importance
+#| fig-cap: "Feature importance based on PCA + Regression"
+
+# Calculate feature importance
+feature_importance = np.zeros(pca.components_.shape[1])
+for i in range(optimal_n):
+    feature_importance += final_model.coef_[i] * pca.components_[i]
+
+# Create DataFrame for visualization
+importance_df = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': np.abs(feature_importance)
+}).sort_values('Importance', ascending=False)
+
+# Plot top features
+plt.figure(figsize=(12, 8))
+importance_df.head(15).set_index('Feature').sort_values('Importance').plot(kind='barh')
+plt.title('Feature Importance Based on PCA + Regression')
+plt.xlabel('Absolute Importance')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+
+# | label: feature-importance 
+# | fig-cap: "Treemap of Feature Importance Based on PCA + Regression"
+
+import squarify
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+from matplotlib.patches import Patch
+
+# Recalculate feature importance from PCA + regression
+feature_importance = np.zeros(pca.components_.shape[1])
+for i in range(optimal_n):
+    feature_importance += final_model.coef_[i] * pca.components_[i]
+
+# Create DataFrame
+importance_df = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': np.abs(feature_importance)
+}).sort_values('Importance', ascending=False)
+
+# Select top 15 features
+top_features = importance_df.head(15)
+
+# Mapping from technical column names to readable labels
+rename_dict = {
+    'CrimeRate': 'Crime Rate',
+    'less_than_hs_diploma_women': 'Women without a HS Diploma',
+    'CrimeViolentRate': 'Violent Crime Rate',
+    'CrimeNonViolentRate': 'Non-Violent Crime Rate',
+    'teen_birth_rate': 'Teen Birth Rate',
+    'IncarcerationRate_Per100kResidents_2022': 'Incarceration Rate',
+    'gun_ownership_rates_per_state': 'Gun Ownership Rate',
+    'gun_policy_strength': 'Gun Policy Strength',
+    'poverty_rate_2023': 'Poverty Rate',
+    'IncarcerationRate_BlackWhiteDisparity(X_to_1)_2020': 'Incarceration Disparity',
+    'suicide_by_firearms': 'Suicide by Firearms',
+    'dv_spending_per_person': 'DV Spending per Person',
+    'alcohol_related_death_rate': 'Alcohol Death Rate',
+    '2022 Suicide Deaths per 100,000 people (age-adjusted)': 'Suicide Death Rate',
+    'IncarcerationRate_YouthCustodyRatePer100kYouths_2021': 'Youth Incarceration Rate',
+    'dv_people_to_shelter': 'DV Shelter Demand'
+}
+
+# Apply renaming
+importance_df['Label'] = importance_df['Feature'].map(rename_dict).fillna(importance_df['Feature'])
+
+# Plot the treemap with custom font sizes
+plt.figure(figsize=(12, 8))
+
+# Generate the normed coordinates for the boxes
+normed = squarify.normalize_sizes(importance_df.head(15)['Importance'], 1, 1)
+rects = squarify.squarify(normed, 0, 0, 1, 1)
+
+# Choose the color palette
+colors = sns.color_palette("RdYlBu_r", 15)
+
+# Plot the rectangles
+x = [rect['x'] for rect in rects]
+y = [rect['y'] for rect in rects]
+dx = [rect['dx'] for rect in rects]
+dy = [rect['dy'] for rect in rects]
+
+# Create custom labels with different font sizes
+labels = importance_df.head(15)['Label'].tolist()
+special_labels = ['Suicide Death Rate', 'Youth Incarceration Rate', 'Women without a HS Diploma']
+
+for i, (rect, label) in enumerate(zip(rects, labels)):
+    if label in special_labels:
+        fontsize = 7  # Smaller font for the specified labels
+    else:
+        fontsize = 11  # Larger font for all other labels
+        
+    plt.fill_between([rect['x'], rect['x']+rect['dx']], [rect['y'], rect['y']], 
+                       [rect['y'], rect['y']], color=colors[i], alpha=0.9)
+    plt.fill_between([rect['x'], rect['x']+rect['dx']], [rect['y']+rect['dy'], rect['y']+rect['dy']], 
+                       [rect['y'], rect['y']], color=colors[i], alpha=0.9)
+    plt.fill_between([rect['x'], rect['x']], [rect['y'], rect['y']+rect['dy']], 
+                       [rect['y'], rect['y']], color=colors[i], alpha=0.9)
+    plt.fill_between([rect['x']+rect['dx'], rect['x']+rect['dx']], [rect['y'], rect['y']+rect['dy']], 
+                       [rect['y'], rect['y']], color=colors[i], alpha=0.9)
+    
+    # Calculate the center of the rectangle for text placement
+    text_x = rect['x'] + rect['dx']/2
+    text_y = rect['y'] + rect['dy']/2
+    
+    plt.text(text_x, text_y, label, 
+             horizontalalignment='center',
+             verticalalignment='center',
+             fontsize=fontsize,
+             weight='bold')
+
+plt.axis('off')
+plt.title("Top Features Contributing to Firearm Mortality (via PCA-Regression Model)", 
+          fontsize=14, weight='bold')
+plt.tight_layout()
+plt.show()
+
+```
+
+
+Crime metrics dominate
+
+Gun-related variables (ownership & policy) are both in the top 10, reinforcing the PC1 narrative.
+
+Structural disadvantage indicators like teen birth rate, poverty, and incarceration disparities show up strongly, suggesting long-term socioeconomic context matters.
+
+## Conclusions
+
+Our Principal Component Regression analysis reveals that firearm mortality across U.S. states is driven by complex, interrelated factors that can be understood through five key components. These components represent coherent patterns in our society that help us understand the drivers of firearm mortality better than individual variables alone.
+
+### Geographic Implications
+
+The state clustering visualization reveals clear regional patterns aligned with our components. Northeastern states typically score low on the Rural-Conservative component and have low firearm mortality rates. Southern states score high on this component and have high firearm mortality. Western and Midwestern states show more variation, suggesting more diverse policy and cultural environments.
+
+### Policy Implications
+
+These findings suggest that addressing firearm mortality requires comprehensive approaches that consider the intertwined nature of societal factors:
+
+1. Gun availability and policy remain central factors, but they operate within broader social contexts
+2. Crime reduction alone is unlikely to dramatically reduce firearm mortality without addressing other factors
+3. Investment in social services may provide an important complementary approach
+4. Regional differences suggest that policy approaches may need to be tailored to different state contexts
+
+### Methodological Strength
+
+The PCR approach successfully reduces dimensionality while maintaining high predictive power (R² of 0.816), demonstrating that firearm mortality can be effectively modeled as a function of these latent components. This suggests that policies targeting these broader patterns, rather than individual variables in isolation, may be more effective in reducing firearm mortality.
+
