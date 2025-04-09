@@ -347,6 +347,57 @@ plt.tight_layout(rect=[0, 0.05, 1, 0.95])
 plt.show()
 ```
 
+```{python}
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+# Create a mapping for cleaner feature names
+clean_names = {
+    'domestic_violence_prevention_index': 'Domestic Violence Prevention',
+    'risk_intervention_index': 'Risk Intervention',
+    'location_restrictions_index': 'Location Restrictions',
+    'high_risk_individual_index': 'High-Risk Individual',
+    'safety_regulations_index': 'Safety Regulations',
+    'weapon_purchase_restrictions_index': 'Weapon Purchase Restrictions'
+}
+
+# Apply mapping to DataFrame
+importance_df['Clean Feature'] = importance_df['Feature'].map(clean_names)
+
+# Sort by absolute coefficient
+importance_df = importance_df.sort_values('Coefficient')
+
+# Set colors
+colors = ['red' if coef > 0 else 'green' for coef in importance_df['Coefficient']]
+
+# Plot
+plt.figure(figsize=(12, 5))
+plt.barh(
+    importance_df['Clean Feature'],
+    importance_df['Coefficient'],
+    color=colors,
+    edgecolor='black'
+)
+
+# Aesthetics
+plt.axvline(x=0, color='black', linestyle='--', linewidth=1)
+plt.xlabel('Effect on Log-Odds of High Firearm Mortality', fontsize=12)
+plt.ylabel('')
+plt.title('Policy Index Impact on Firearm Mortality (Logistic Regression Coefficients)', fontsize=14, weight='bold')
+plt.grid(axis='x', linestyle='--', alpha=0.5)
+
+# Caption
+plt.figtext(0.5, -0.05, 
+    "Green bars: Protective policies (associated with lower mortality) · Red bars: Risk-enhancing policies (associated with higher mortality)", 
+    wrap=True, ha="center", fontsize=10)
+
+plt.tight_layout()
+plt.show()
+
+```
+
 ## Discussion and Interpretation
 
 Our analysis reveals several key findings about the relationship between gun policies and firearm mortality:
