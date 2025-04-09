@@ -68,9 +68,7 @@ selected_columns = [
     'unemployment_rate',
     'labor_participation_women_percentage',
     'domestic_violence_percentage',
-    'missing_person_by_state',
     'gun_ownership_rates_per_state',
-    'suicide_by_firearms',
     'CrimeViolentRate',
     'CrimeNonViolentRate',
     'IncarcerationRate_Per100kResidents_2022',
@@ -260,6 +258,9 @@ if final_model is not None:
     
     model_std = sm.OLS(y_z, sm.add_constant(X_final_z)).fit()
     
+```
+
+```{python}
     # Display standardized coefficients
     std_coefs = pd.DataFrame({
         'Standardized Coefficient': model_std.params.drop('const')
@@ -282,6 +283,87 @@ if final_model is not None:
     print(f"Stepwise Model R²: {stepwise_r2:.4f} with {stepwise_n_predictors} predictors")
 ```
 
+```{python}
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Assuming you have your data in std_coefs
+# Create a dictionary to map the current variable names to cleaner ones
+clean_names = {
+    'gun_ownership_rates_per_state': 'Gun Ownership Rate',
+    'poverty_rate_2023': 'Poverty Rate',
+    'IncarcerationRate_Per100kResidents_2022': 'Incarceration Rate',
+    'CrimeViolentRate': 'Violent Crime Rate',
+}
+
+# Create a copy of your dataframe to avoid modifying the original
+std_coefs_clean = std_coefs.copy()
+
+# Rename the index or the 'Variable' column, depending on your dataframe structure
+if 'Variable' in std_coefs_clean.columns:
+    # If you already have a 'Variable' column
+    std_coefs_clean['Variable'] = std_coefs_clean['Variable'].map(clean_names)
+else:
+    # If variable names are in the index
+    std_coefs_clean.index = std_coefs_clean.index.map(lambda x: clean_names.get(x, x))
+    std_coefs_clean = std_coefs_clean.reset_index().rename(columns={'index': 'Variable'})
+
+# Sort for plotting
+std_coefs_sorted = std_coefs_clean.sort_values('Standardized Coefficient', ascending=True)
+
+# Set plot style
+sns.set(style='whitegrid')
+
+# Try the updated syntax for newer versions of seaborn
+plt.figure(figsize=(10, 6))
+ax = sns.barplot(
+    x=std_coefs_sorted['Standardized Coefficient'],
+    y=std_coefs_sorted['Variable'],
+    palette='coolwarm',
+    edgecolor='black'
+)
+
+plt.title('Standardized Regression Coefficients\n(Backward Stepwise Model)', fontsize=14, weight='bold')
+plt.xlabel('Standardized Coefficient', fontsize=12)
+plt.ylabel('')
+plt.tight_layout()
+plt.show()
+
+```
+
+```{python}
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Reset index for cleaner plot labels if needed
+std_coefs = std_coefs.reset_index().rename(columns={'index': 'Variable'})
+
+# Sort for plotting
+std_coefs_sorted = std_coefs.sort_values('Standardized Coefficient', ascending=True)
+
+# Set plot style
+sns.set(style='whitegrid')
+
+# Plot - updated syntax for newer Seaborn
+plt.figure(figsize=(10, 6))
+ax = sns.barplot(
+    x=std_coefs_sorted['Standardized Coefficient'],
+    y=std_coefs_sorted['Variable'],
+    palette='coolwarm',
+    edgecolor='black'
+)
+
+plt.title('Standardized Regression Coefficients\n(Backward Stepwise Model)', fontsize=14, weight='bold')
+plt.xlabel('Standardized Coefficient', fontsize=12)
+plt.ylabel('')
+plt.tight_layout()
+plt.show()
+
+```
+
 ### Key Findings from Stepwise Regression
 
 After removing non-significant variables, the final stepwise model retained 9 significant predictors, including:
@@ -291,8 +373,6 @@ After removing non-significant variables, the final stepwise model retained 9 si
 3. **Suicide by Firearms**: Positive relationship
 4. **Drug Overdose Mortality**: Positive relationship
 5. **Poverty Rate**: Positive relationship
-
-The final model achieved an R-squared of 0.90, indicating that these variables explain approximately 90% of the variance in firearm mortality rates across states.
 
 ## 3. Hierarchical Regression
 
@@ -381,7 +461,7 @@ blocks = [
      'IncarcerationRate_BlackWhiteDisparity(X_to_1)_2020'],
     
     # Block 4: Health and substance abuse
-    ['suicide_by_firearms', 'alcohol_related_death_rate', 'drug_overdose_mortality_rate',
+    ['alcohol_related_death_rate', 'drug_overdose_mortality_rate',
      '2022 Suicide Deaths per 100,000 people (age-adjusted)', 'mental health_score'],
     
     # Block 5: Social factors and education
@@ -402,7 +482,7 @@ block_names = [
 hier_models, hier_summary = hierarchical_regression(X, y, blocks, block_names)
 
 # Plot the progression of R-squared with each block
-plt.figure(figsize=(12, 6))
+plt.figure(figsize=(14,4))
 
 # Plot cumulative R-squared
 plt.subplot(1, 2, 1)
@@ -412,19 +492,6 @@ plt.title('Cumulative R-squared by Block')
 plt.ylabel('R-squared')
 plt.xticks(rotation=45, ha='right')
 plt.grid(axis='y', alpha=0.3)
-
-# Plot R-squared change
-plt.subplot(1, 2, 2)
-plt.bar(hier_summary['Block'], hier_summary['R-squared Change'], color='green', alpha=0.7)
-for i, value in enumerate(hier_summary['R-squared Change']):
-    plt.text(i, value + 0.01, f'{value:.3f}', ha='center')
-plt.title('R-squared Change by Block')
-plt.ylabel('R-squared Change')
-plt.xticks(rotation=45, ha='right')
-plt.grid(axis='y', alpha=0.3)
-
-plt.tight_layout()
-plt.show()
 
 # Save hierarchical model results for comparison
 final_hier_model = hier_models[-1]
