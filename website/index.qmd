@@ -9,10 +9,19 @@ format:
 
 ```{python}
 import geopandas as gpd
+import requests
+import zipfile
+import io
+import os
 
-# Load U.S. state shapefile from Census Bureau
-states_url = "https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip"
-states_map = gpd.read_file(states_url)
+print("Loading shapefile into GeoPandas...")
+states_map = gpd.read_file("data/cb_2018_us_state_20m/cb_2018_us_state_20m.shp")
+
+# Optional: Convert names to lowercase for merges
+states_map["region"] = states_map["NAME"].str.lower()
+
+# Done!
+print(states_map.head())
 
 # Convert geometry to WKT format
 states_map["geometry"] = states_map["geometry"].apply(lambda geom: geom.wkt)
@@ -117,8 +126,8 @@ gun_deaths["mortality_score"] = pd.cut(
 ).astype(float)
 
 # Load U.S. state shapefile from Census Bureau
-states_url = "https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip"
-states_map = gpd.read_file(states_url)
+print("Loading shapefile into GeoPandas...")
+states_map = gpd.read_file("data/cb_2018_us_state_20m/cb_2018_us_state_20m.shp")
 
 # Ensure lowercase for merging
 states_map["region"] = states_map["NAME"].str.lower()
